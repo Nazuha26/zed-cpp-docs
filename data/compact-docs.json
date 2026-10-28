@@ -1,0 +1,26 @@
+[
+  {
+    "symbol": "std::getline",
+    "summary": "Read characters from a stream into a string up to a delimiter. The delimiter is consumed but is not stored. The default delimiter is a newline.",
+    "signature": "std::istream& getline(std::istream& input, std::string& text);\nstd::istream& getline(std::istream& input, std::string& text, char delimiter);",
+    "parameters": "- `input`: stream to read.\n- `text`: destination string, cleared before extraction.\n- `delimiter`: character that terminates extraction.",
+    "returns": "The input stream. Check its state to detect failure or end of input.",
+    "example": "#include <sstream>\n#include <string>\n\nint main() {\n    std::istringstream input(\"first line\\nsecond line\");\n    std::string line;\n    std::getline(input, line);\n    return line == \"first line\" ? 0 : 1;\n}"
+  },
+  {
+    "symbol": "std::vector::push_back",
+    "summary": "Append one element to the end of a vector. Reallocation invalidates all iterators and references; without reallocation, the old end iterator is invalidated.",
+    "signature": "void push_back(const value_type& value);\nvoid push_back(value_type&& value);",
+    "parameters": "- `value`: element to copy or move into the vector.",
+    "returns": "No return value. Amortized constant time.",
+    "example": "#include <vector>\n\nint main() {\n    std::vector<int> values;\n    values.push_back(42);\n    return values[0] == 42 ? 0 : 1;\n}"
+  },
+  {
+    "symbol": "printf",
+    "summary": "Write formatted output to standard output. Each conversion in the format string must agree with the type of its argument.",
+    "signature": "int printf(const char* format, ...);",
+    "parameters": "- `format`: format string.\n- `...`: values required by its conversions.",
+    "returns": "The number of characters written, or a negative value if output fails.",
+    "example": "#include <stdio.h>\n\nint main() {\n    int count = printf(\"value = %d\\n\", 42);\n    return count < 0;\n}"
+  }
+]

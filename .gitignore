@@ -1,0 +1,9 @@
+/target/
+**/target/
+/.downloads/
+/.local/
+/extension.wasm
+*.log
+/.zed/settings.json
+__pycache__/
+*.pyc

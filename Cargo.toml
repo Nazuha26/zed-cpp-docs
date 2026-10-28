@@ -1,0 +1,17 @@
+[package]
+name = "zed-cpp-docs-extension"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+doctest = false
+
+[workspace]
+members = ["crates/proxy"]
+resolver = "2"
+
+[dependencies]
+zed_extension_api = "=0.7.0"
+serde = { version = "1", features = ["derive"] }

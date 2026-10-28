@@ -1,0 +1,16 @@
+id = "cpp-docs"
+name = "C/C++ Docs"
+version = "0.1.0"
+schema_version = 1
+authors = ["Nazuha26"]
+description = "Offline cppreference documentation in C and C++ hover tooltips"
+repository = "https://github.com/Nazuha26/zed-cpp-docs"
+
+[language_servers.cpp-docs]
+name = "C/C++ Docs (clangd proxy)"
+languages = ["C", "C++"]
+opt_in_languages = ["C", "C++"]
+
+[language_servers.cpp-docs.language_ids]
+C = "c"
+"C++" = "cpp"
