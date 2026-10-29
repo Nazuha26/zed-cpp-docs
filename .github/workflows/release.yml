@@ -18,8 +18,8 @@ jobs:
     name: Validate and build the Zed extension
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.1.0
         with:
           python-version: "3.12"
       - name: Check release versions
@@ -57,7 +57,7 @@ jobs:
         run: |
           mkdir dist
           cp target/wasm32-wasip2/release/zed_cpp_docs_extension.wasm dist/cpp-docs-extension.wasm
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.2
         with:
           name: release-extension
           path: dist/*
@@ -80,8 +80,8 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.1.0
         with:
           python-version: "3.12"
       - name: Install Linux build and test dependencies
@@ -134,7 +134,7 @@ jobs:
                   for path in files:
                       archive.add(path, arcname=path.name)
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.2
         with:
           name: release-${{ matrix.target }}
           path: dist/*
@@ -148,8 +148,8 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/download-artifact@v8.0.2
         with:
           pattern: release-*
           path: dist
