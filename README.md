@@ -6,9 +6,9 @@ raw template declarations.
 > **Local documentation.** cppreference is downloaded once on first start and
 > stored on your machine. After that, tooltips and full pages work offline.
 
-![std::getline hover](assets/hover-getline.jpg)
+![example 1](assets/hover-1.jpg)
 
-![std::pair hover](assets/hover-pair.jpg)
+![example 2](assets/hover-2.jpg)
 
 ## How it works
 
