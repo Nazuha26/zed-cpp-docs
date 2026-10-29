@@ -96,9 +96,19 @@ hides the section. Restart the language server to apply changes.
 ## Development
 
 ```sh
-cargo install --path crates/proxy   # build the proxy and put it in PATH
+cargo install --path crates/proxy --locked --force
 cargo test --workspace
 ```
+
+Build the proxy in the same environment where the project and clangd run.
+For a WSL project, run `cargo install` inside that WSL distribution. Installing
+the Windows executable does not update the separate Linux executable in WSL.
+
+After changing proxy code or `data/compact-docs.json`, repeat `cargo install` and
+restart the language server. Zed's **Rebuild** button rebuilds the WASM launcher;
+it does not rebuild a proxy already installed in PATH. The version shown on the
+Extensions page identifies the launcher, while a separately installed proxy can
+still be an older build.
 
 Building the proxy yourself is also the way to run it on platforms without a
 prebuilt release. Integration tests with a real clangd are in [tests](tests).

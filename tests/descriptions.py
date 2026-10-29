@@ -22,7 +22,7 @@ def check(binary, clangd, data, descriptions, custom):
         }, 1)
         client.send("initialized", {})
         sources = {}
-        for name in ["standard.cpp", "types.cpp"]:
+        for name in ["standard.cpp", "types.cpp", "cstdio.cpp"]:
             path = root / "samples" / name
             text = path.read_text()
             sources[name] = (path.as_uri(), text)
@@ -69,6 +69,11 @@ def check(binary, clangd, data, descriptions, custom):
         assert "Source: cppreference" in alias
         assert "Includes compact descriptions" not in alias
         assert "user configuration" not in alias
+        formatted = hover("cstdio.cpp", "fprintf(file")
+        assert "Write formatted output to a specified stream" in formatted
+        assert "The number of characters written, or a negative value on output or encoding error." in formatted
+        assert "Includes compact descriptions" in formatted
+        assert "1,2)" not in formatted and "3)" not in formatted and "4)" not in formatted
         own = hover("standard.cpp", "printf(0)")
         assert "MY PRINTF DESCRIPTION" not in own and "Source:" not in own
         print("PASS user fields > bundled compact fields > cppreference; project declarations preserved" if custom
