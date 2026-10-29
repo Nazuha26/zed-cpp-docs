@@ -101,12 +101,13 @@ jobs:
           PROXY: target/${{ matrix.target }}/release/${{ matrix.executable }}
           DOCS: ${{ runner.temp }}/cppreference
         run: |
-          python tests/examples.py clang++
+          python tests/examples.py clang++ --c-compiler clang --run
           python tests/integration.py "$PROXY" --clangd "$(command -v clangd)"
           python tests/failure_modes.py "$PROXY" "$(command -v clangd)"
           "$PROXY" --ensure-cppreference --data-dir "$DOCS"
           python tests/integration.py "$PROXY" --real --clangd "$(command -v clangd)" --data-dir "$DOCS"
           python tests/descriptions.py "$PROXY" "$(command -v clangd)" "$DOCS"
+          python tests/catalog.py "$PROXY" "$(command -v clangd)" "$DOCS"
       - name: Package the proxy at the archive root
         env:
           TARGET: ${{ matrix.target }}

@@ -308,10 +308,11 @@ impl Router {
                 && message.get("error").is_none()
                 && !message["result"].is_null()
             {
-                if let Some(entry) = docs::resolve(
+                if let Some(entry) = docs::resolve_with_hover(
                     &self.entries,
                     hover.symbols.as_ref().unwrap_or(&Value::Null),
                     hover.declaration.as_ref().unwrap_or(&Value::Null),
+                    &message,
                     &self.roots,
                     &self.index,
                 ) {

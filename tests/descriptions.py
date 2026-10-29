@@ -63,8 +63,12 @@ def check(binary, clangd, data, descriptions, custom):
         assert "Includes compact descriptions maintained by this extension" in push_back
         mapping = hover("types.cpp", "map<int")
         assert "Source: cppreference" in mapping
-        assert "Includes compact descriptions" not in mapping
+        assert "Includes compact descriptions" in mapping
         assert "user configuration" not in mapping
+        alias = hover("types.cpp", "value_type character")
+        assert "Source: cppreference" in alias
+        assert "Includes compact descriptions" not in alias
+        assert "user configuration" not in alias
         own = hover("standard.cpp", "printf(0)")
         assert "MY PRINTF DESCRIPTION" not in own and "Source:" not in own
         print("PASS user fields > bundled compact fields > cppreference; project declarations preserved" if custom

@@ -89,10 +89,85 @@ pub fn canonical(name: &str) -> String {
     result.trim_start_matches("::").to_string()
 }
 
-pub fn resolve<'a>(
+#[cfg(test)]
+fn resolve<'a>(
     entries: &'a [Entry],
     symbols: &Value,
     declaration: &Value,
+    roots: &[url::Url],
+    index: &HashMap<String, Vec<usize>>,
+) -> Option<&'a Entry> {
+    resolve_with_hover(entries, symbols, declaration, &Value::Null, roots, index)
+}
+
+fn msvc_map_owner(hover: &Value) -> Option<&'static str> {
+    let text = hover.pointer("/result/contents/value")?.as_str()?;
+    let mut owners = text
+        .lines()
+        .filter_map(|line| line.strip_prefix("// In _Tree<std::_Tmap_traits<"));
+    let traits = owners.next()?;
+    if owners.next().is_some() {
+        return None;
+    }
+    let mut depth = 0_u32;
+    let mut last = 0;
+    for (offset, character) in traits.char_indices() {
+        match character {
+            '<' => depth += 1,
+            '>' if depth > 0 => depth -= 1,
+            ',' if depth == 0 => last = offset + 1,
+            '>' if depth == 0 && traits[offset..].trim() == ">>" => {
+                return match traits[last..offset].trim() {
+                    "false" => Some("std::map"),
+                    "true" => Some("std::multimap"),
+                    _ => None,
+                };
+            }
+            '>' => return None,
+            _ => {}
+        }
+    }
+    None
+}
+
+fn c_runtime_header(entry: &Entry, header: &str, path: &str) -> bool {
+    if !entry
+        .source_url
+        .starts_with("https://en.cppreference.com/w/c/")
+        || entry.symbol.contains("::")
+    {
+        return false;
+    }
+    let public_header = if path.contains("/vc/tools/msvc/")
+        || (path.contains("/windows kits/") && path.contains("/ucrt/"))
+    {
+        match header {
+            "corecrt_malloc.h" | "corecrt_search.h" => "stdlib.h",
+            "vcruntime_string.h" | "corecrt_memory.h" => "string.h",
+            "corecrt_wstdio.h" => "stdio.h",
+            "corecrt_wtime.h" => "time.h",
+            _ => return false,
+        }
+    } else if path.contains("/usr/include/") {
+        match header {
+            "FILE.h" | "__FILE.h" if path.contains("/bits/types/") => "stdio.h",
+            "struct_tm.h" if path.contains("/bits/types/") => "time.h",
+            _ => return false,
+        }
+    } else {
+        return false;
+    };
+    entry
+        .headers
+        .iter()
+        .any(|candidate| candidate == public_header)
+}
+
+pub fn resolve_with_hover<'a>(
+    entries: &'a [Entry],
+    symbols: &Value,
+    declaration: &Value,
+    hover: &Value,
     roots: &[url::Url],
     index: &HashMap<String, Vec<usize>>,
 ) -> Option<&'a Entry> {
@@ -129,7 +204,7 @@ pub fn resolve<'a>(
         .unwrap_or("");
     let qualified = canonical(&format!("{container}{name}"));
     // clangd containers normally end in ::; accept older variants without it.
-    let qualified = if !container.is_empty() && !container.ends_with("::") {
+    let mut qualified = if !container.is_empty() && !container.ends_with("::") {
         canonical(&format!("{container}::{name}"))
     } else {
         qualified
@@ -164,6 +239,12 @@ pub fn resolve<'a>(
                 .and_then(|(_, relative)| relative.split_once('/'))
                 .is_some_and(|(_, relative)| relative.starts_with("c++/"))
             || normalized_path.contains("/vc/tools/msvc/"));
+    // MSVC shares a tree implementation between map and multimap. The instantiated
+    // traits in clangd's hover distinguish their different key-count semantics.
+    if standard_cpp && header == "xtree" && canonical(container) == "std::_Tree::" {
+        let owner = msvc_map_owner(hover)?;
+        qualified = format!("{owner}::{name}");
+    }
     let matches: Vec<_> = index
         .get(&qualified)?
         .iter()
@@ -171,6 +252,7 @@ pub fn resolve<'a>(
         .filter(|entry| {
             entry.symbol == qualified
                 && (standard_cpp
+                    || c_runtime_header(entry, header, &normalized_path)
                     || (entry.kind == "macro"
                         && (normalized_path.contains("/vc/tools/msvc/")
                             || (normalized_path.contains("/windows kits/")
@@ -196,6 +278,19 @@ pub fn resolve<'a>(
     let candidates = if exact.is_empty() { preferred } else { exact };
     if candidates.len() == 1 || candidates.iter().all(|entry| entry.kind == "macro") {
         candidates.first().copied()
+    } else if candidates.iter().all(|entry| {
+        entry.kind == "function"
+            && entry
+                .source_url
+                .starts_with("https://en.cppreference.com/w/c/")
+    }) {
+        // Some C functions appear on both their own page and a shared family page.
+        let mut dedicated = candidates
+            .iter()
+            .copied()
+            .filter(|entry| entry.source_url.rsplit('/').next() == Some(name));
+        let entry = dedicated.next()?;
+        dedicated.next().is_none().then_some(entry)
     } else {
         None
     }
@@ -260,6 +355,121 @@ mod tests {
 
     fn uri(path: &str) -> String {
         format!("file://{}{path}", if cfg!(windows) { "/C:" } else { "" })
+    }
+
+    #[test]
+    fn private_c_runtime_headers_require_a_known_public_header_and_sdk_path() {
+        for (symbol, public, private, source) in [
+            ("malloc", "stdlib.h", "corecrt_malloc.h", "memory/malloc"),
+            (
+                "memcpy",
+                "string.h",
+                "vcruntime_string.h",
+                "string/byte/memcpy",
+            ),
+            ("qsort", "stdlib.h", "corecrt_search.h", "algorithm/qsort"),
+            ("FILE", "stdio.h", "corecrt_wstdio.h", "io/FILE"),
+            ("tm", "time.h", "corecrt_wtime.h", "chrono/tm"),
+        ] {
+            let entries = vec![Entry {
+                symbol: symbol.into(),
+                headers: vec![public.into()],
+                source_url: format!("https://en.cppreference.com/w/c/{source}"),
+                ..Entry::default()
+            }];
+            let info = json!({"result":[{"name":symbol}]});
+            for prefix in [
+                "/tools/VC/Tools/MSVC/version/include/",
+                "/Program Files (x86)/Windows Kits/10/Include/version/ucrt/",
+            ] {
+                let declaration = json!({"result":[{"uri":uri(&format!("{prefix}{private}"))}]});
+                assert!(resolve(&entries, &info, &declaration, &[], &index(&entries)).is_some());
+                let roots = [url::Url::parse(&uri(prefix)).unwrap()];
+                assert!(resolve(&entries, &info, &declaration, &roots, &index(&entries)).is_none());
+            }
+            let declaration = json!({"result":[{"uri":uri(&format!("/custom/sdk/{private}"))}]});
+            assert!(resolve(&entries, &info, &declaration, &[], &index(&entries)).is_none());
+        }
+        let entry = Entry {
+            symbol: "printf".into(),
+            headers: vec!["stdio.h".into()],
+            source_url: "https://en.cppreference.com/w/c/io/fprintf".into(),
+            ..Entry::default()
+        };
+        assert!(!c_runtime_header(
+            &entry,
+            "corecrt_malloc.h",
+            "/tools/vc/tools/msvc/version/include/corecrt_malloc.h"
+        ));
+    }
+
+    #[test]
+    fn inherited_msvc_tree_members_need_unambiguous_instantiated_map_traits() {
+        let entries: Vec<_> = ["std::map::count", "std::multimap::count"]
+            .into_iter()
+            .map(|symbol| Entry {
+                symbol: symbol.into(),
+                headers: vec!["map".into()],
+                ..Entry::default()
+            })
+            .collect();
+        let info = json!({"result":[{"name":"count","containerName":"std::_Tree::"}]});
+        let declaration =
+            json!({"result":[{"uri":uri("/tools/VC/Tools/MSVC/version/include/xtree")}]});
+        for (flag, expected) in [
+            ("false", "std::map::count"),
+            ("true", "std::multimap::count"),
+        ] {
+            let hover = json!({"result":{"contents":{"value":format!("```cpp\n// In _Tree<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int>>, {flag}>>\npublic: size_type count(const key_type&) const\n```")}}});
+            assert_eq!(
+                resolve_with_hover(&entries, &info, &declaration, &hover, &[], &index(&entries))
+                    .unwrap()
+                    .symbol,
+                expected
+            );
+            let roots = [url::Url::parse(&uri("/tools/")).unwrap()];
+            assert!(resolve_with_hover(
+                &entries,
+                &info,
+                &declaration,
+                &hover,
+                &roots,
+                &index(&entries)
+            )
+            .is_none());
+        }
+        assert!(resolve(&entries, &info, &declaration, &[], &index(&entries)).is_none());
+        for text in [
+            "// In _Tree<std::_Tmap_traits<int, int, Less, Alloc, Unknown>>",
+            "// In _Tree<std::_Tset_traits<int, Less, Alloc, false>>",
+            "// In _Tree<std::_Tmap_traits<int, int, Less, Alloc, false>>\n// In _Tree<std::_Tmap_traits<int, int, Less, Alloc, true>>",
+        ] {
+            assert!(msvc_map_owner(&json!({"result":{"contents":{"value":text}}})).is_none());
+        }
+    }
+
+    #[test]
+    fn c_function_family_aliases_prefer_the_unique_dedicated_page() {
+        let entries: Vec<_> = ["putc", "fputc"]
+            .into_iter()
+            .map(|page| Entry {
+                symbol: "fputc".into(),
+                kind: "function".into(),
+                headers: vec!["stdio.h".into()],
+                source_url: format!("https://en.cppreference.com/w/c/io/{page}"),
+                ..Entry::default()
+            })
+            .collect();
+        let info = json!({"result":[{"name":"fputc"}]});
+        let declaration = json!({"result":[{"uri":uri("/usr/include/stdio.h")}]});
+        assert!(
+            resolve(&entries, &info, &declaration, &[], &index(&entries))
+                .unwrap()
+                .source_url
+                .ends_with("/fputc")
+        );
+        let duplicates = vec![entries[1].clone(), entries[1].clone()];
+        assert!(resolve(&duplicates, &info, &declaration, &[], &index(&duplicates)).is_none());
     }
 
     #[test]

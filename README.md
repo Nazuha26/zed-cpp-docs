@@ -25,6 +25,9 @@ own symbols and ambiguous matches keep the normal clangd tooltip. A link in the
 tooltip opens the full page in a browser.
 
 The index has about 11,000 entries from the cppreference HTML book (2025-02-09).
+It includes [100 compact descriptions](data/README.md) for everyday C and C++
+symbols, with checked examples and per-symbol documentation sources. Other
+indexed symbols use the extracted cppreference text.
 
 ## Installation
 
@@ -33,7 +36,7 @@ The index has about 11,000 entries from the cppreference HTML book (2025-02-09).
 2. Clone the released version:
 
    ```sh
-   git clone --branch v0.1.0 --depth 1 https://github.com/Nazuha26/zed-cpp-docs.git
+   git clone --branch v0.2.0 --depth 1 https://github.com/Nazuha26/zed-cpp-docs.git
    ```
 
    In Zed, open **Extensions → Install Dev Extension** and select the cloned
@@ -61,7 +64,7 @@ On first start, the extension:
 
 For WSL projects, install `clangd` and `curl` inside the distribution.
 
-The current release is [v0.1.0](https://github.com/Nazuha26/zed-cpp-docs/releases/tag/v0.1.0).
+The current release is [v0.2.0](https://github.com/Nazuha26/zed-cpp-docs/releases/tag/v0.2.0).
 Installation currently uses Zed's dev extension support. The release includes
 prebuilt proxies for Windows x86_64 and Linux x86_64, plus a compiled WASM launcher
 and `SHA256SUMS`. Other platforms require building the proxy from source.
