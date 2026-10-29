@@ -30,7 +30,14 @@ The index has about 11,000 entries from the cppreference HTML book (2025-02-09).
 
 1. Install `clangd` and `curl`, plus [Rust](https://rustup.rs/): Zed needs it to
    build the extension while it is installed from source.
-2. Clone the repository and add it in Zed: **Extensions → Install Dev Extension**.
+2. Clone the released version:
+
+   ```sh
+   git clone --branch v0.1.0 --depth 1 https://github.com/Nazuha26/zed-cpp-docs.git
+   ```
+
+   In Zed, open **Extensions → Install Dev Extension** and select the cloned
+   `zed-cpp-docs` directory.
 3. Add to your Zed settings:
 
    ```json
@@ -53,6 +60,11 @@ On first start, the extension:
 2. Downloads cppreference with `curl` and builds a local index (~350 MB on disk).
 
 For WSL projects, install `clangd` and `curl` inside the distribution.
+
+The current release is [v0.1.0](https://github.com/Nazuha26/zed-cpp-docs/releases/tag/v0.1.0).
+Installation currently uses Zed's dev extension support. The release includes
+prebuilt proxies for Windows x86_64 and Linux x86_64, plus a compiled WASM launcher
+and `SHA256SUMS`. Other platforms require building the proxy from source.
 
 ## Settings
 
