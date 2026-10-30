@@ -100,6 +100,12 @@ cargo install --path crates/proxy --locked --force
 cargo test --workspace
 ```
 
+When this repository is open in Zed, run **task: spawn** from the command palette
+and choose **C/C++ Docs: build/install proxy (current environment)**. The task in
+[.zed/tasks.json](.zed/tasks.json) installs the Windows proxy in a local Windows
+project or the Linux proxy in a WSL/Linux project. Restart the language server
+after a successful build with **editor: restart language server**.
+
 Build the proxy in the same environment where the project and clangd run.
 For a WSL project, run `cargo install` inside that WSL distribution. Installing
 the Windows executable does not update the separate Linux executable in WSL.

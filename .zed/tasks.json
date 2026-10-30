@@ -1,0 +1,12 @@
+[
+  {
+    "label": "C/C++ Docs: build/install proxy (current environment)",
+    "command": "cargo",
+    "args": ["install", "--path", "crates/proxy", "--locked", "--force"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "never",
+    "save": "all"
+  }
+]
