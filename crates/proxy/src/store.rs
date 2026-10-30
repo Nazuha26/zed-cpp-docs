@@ -865,6 +865,7 @@ fn parse_cppreference(html: &str, relative: &str) -> Vec<Entry> {
                 user_description: false,
                 family: names.len() > 1,
                 kind: kind.into(),
+                display_kind: String::new(),
                 template_parameters: section(&document, "Template_parameters"),
                 members: String::new(),
                 overview: kind == "type" && title.trim_end().ends_with('>'),

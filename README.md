@@ -22,6 +22,9 @@ replaces the tooltip with a description, signature, parameters and an example. Y
 own symbols and ambiguous matches keep the normal clangd tooltip. A link in the
 tooltip opens the full page in a browser.
 
+Each enriched hover starts with a bold symbol kind, such as **Class**, **Struct**,
+**Function**, **Macro** or **Type alias**.
+
 The index has about 11,000 entries from the cppreference HTML book (2025-02-09).
 It includes [341 compact descriptions](data/README.md) for everyday C and C++
 symbols, with checked examples and per-symbol documentation sources. Other

@@ -194,6 +194,10 @@ pub fn apply(entries: &mut [Entry], notes: &[Note], user: bool) {
             {
                 continue;
             }
+            // Compact signatures may omit the class/struct declaration keyword.
+            if entry.display_kind.is_empty() {
+                entry.display_kind = crate::docs::kind_label(entry).to_string();
+            }
             for (field, replacement) in [
                 (&mut entry.summary, &note.summary),
                 (&mut entry.signature, &note.signature),
@@ -219,6 +223,24 @@ pub fn apply(entries: &mut [Entry], notes: &[Note], user: bool) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn compact_signatures_preserve_the_original_class_kind() {
+        let mut entries = vec![Entry {
+            symbol: "std::vector".into(),
+            kind: "type".into(),
+            signature: "template<class T> class vector;".into(),
+            ..Entry::default()
+        }];
+        apply(&mut entries, &bundled(), false);
+        assert_eq!(crate::docs::kind_label(&entries[0]), "Class");
+        apply(
+            &mut entries,
+            &parse(r#"[{"symbol":"std::vector","signature":"My custom signature"}]"#).unwrap(),
+            true,
+        );
+        assert!(crate::docs::markdown(&entries[0], None).starts_with("**Class** std::vector\n"));
+    }
 
     #[test]
     fn c_notes_follow_the_public_header_without_replacing_cpp_overloads() {

@@ -27,6 +27,8 @@ pub struct Entry {
     pub family: bool,
     #[serde(default = "function_kind")]
     pub kind: String,
+    #[serde(skip)]
+    pub display_kind: String,
     #[serde(default)]
     pub template_parameters: String,
     #[serde(default)]
@@ -444,10 +446,54 @@ pub fn resolve_with_hover<'a>(
     }
 }
 
+pub fn kind_label(entry: &Entry) -> &str {
+    if !entry.display_kind.is_empty() {
+        return &entry.display_kind;
+    }
+    match entry.kind.as_str() {
+        "function" => "Function",
+        "macro" => "Macro",
+        "alias" => "Type alias",
+        "variable" => "Variable",
+        "concept" => "Concept",
+        "type" => {
+            let name = entry.symbol.rsplit("::").next().unwrap_or(&entry.symbol);
+            for (keyword, label) in [
+                ("enum class", "Enum"),
+                ("enum", "Enum"),
+                ("struct", "Struct"),
+                ("union", "Union"),
+                ("class", "Class"),
+            ] {
+                let declaration = format!("{keyword} {name}");
+                if entry
+                    .signature
+                    .match_indices(&declaration)
+                    .any(|(offset, _)| {
+                        entry.signature[offset + declaration.len()..]
+                            .chars()
+                            .next()
+                            .is_none_or(|character| {
+                                !character.is_alphanumeric() && character != '_'
+                            })
+                    })
+                {
+                    return label;
+                }
+            }
+            "Type"
+        }
+        _ => "Symbol",
+    }
+}
+
 pub fn markdown(entry: &Entry, full_page: Option<&str>) -> String {
     let mut text = format!(
-        "### {}\n\n{}\n\n```cpp\n{}\n```",
-        entry.symbol, entry.summary, entry.signature
+        "**{}** {}\n\n{}\n\n```cpp\n{}\n```",
+        kind_label(entry),
+        entry.symbol,
+        entry.summary,
+        entry.signature
     );
     for (title, content) in [
         ("Template parameters", &entry.template_parameters),
@@ -500,6 +546,34 @@ pub fn markdown(entry: &Entry, full_page: Option<&str>) -> String {
 mod tests {
     use super::*;
     use serde_json::json;
+
+    #[test]
+    fn hover_starts_with_a_bold_semantic_kind() {
+        for (kind, signature, expected) in [
+            ("type", "template<class T> class example;", "Class"),
+            ("type", "template<class T> struct example;", "Struct"),
+            ("type", "enum class example;", "Enum"),
+            ("type", "union example;", "Union"),
+            ("type", "class example_extra;", "Type"),
+            (
+                "alias",
+                "using example = std::basic_string<char>;",
+                "Type alias",
+            ),
+            ("function", "void example();", "Function"),
+            ("macro", "#define example 1", "Macro"),
+            ("variable", "int example;", "Variable"),
+            ("concept", "concept example = true;", "Concept"),
+        ] {
+            let entry = Entry {
+                symbol: "example".into(),
+                kind: kind.into(),
+                signature: signature.into(),
+                ..Entry::default()
+            };
+            assert!(markdown(&entry, None).starts_with(&format!("**{expected}** example\n")));
+        }
+    }
 
     fn uri(path: &str) -> String {
         format!("file://{}{path}", if cfg!(windows) { "/C:" } else { "" })

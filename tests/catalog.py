@@ -92,6 +92,7 @@ def run(binary, clangd, data, selected=None):
                         failures.append(f"{entry['symbol']} ({standard}): {result}\nSymbol: {symbol}\nDeclaration: {declaration}")
                         print("FAIL hover", entry["symbol"], standard, flush=True)
                     else:
+                        assert markdown.startswith("**"), (entry["symbol"], "Missing bold symbol kind")
                         assert "[Open full local documentation]" in markdown, entry["symbol"]
                         print("PASS curated hover", entry["symbol"], standard, flush=True)
                     client.send("textDocument/didClose", {"textDocument": {"uri": uri}})
