@@ -99,9 +99,12 @@ cargo test --workspace
 ```
 
 When this repository is open in Zed, run **task: spawn** from the command palette
-and choose **C/C++ Docs: build/install proxy (current environment)**. The task in
-[.zed/tasks.json](.zed/tasks.json) installs the Windows proxy in a local Windows
-project or the Linux proxy in a WSL/Linux project. Restart the language server
+and choose **C/C++ Docs: build/install proxy (Windows)** or
+**C/C++ Docs: build/install proxy (Linux / WSL)** for the project's environment.
+The Windows task builds first and renames the previous executable before installing,
+so an open Zed server does not block replacement. The old server keeps running until
+it is restarted; backups still in use are cleaned up on a later build.
+Tasks are defined in [.zed/tasks.json](.zed/tasks.json). Restart the language server
 after a successful build with **editor: restart language server**.
 
 Build the proxy in the same environment where the project and clangd run.
