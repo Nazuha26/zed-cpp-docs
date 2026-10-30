@@ -1,6 +1,6 @@
 id = "cpp-docs"
 name = "C/C++ Docs"
-version = "0.2.0"
+version = "0.3.0"
 schema_version = 1
 authors = ["Nazuha26"]
 description = "Offline cppreference documentation in C and C++ hover tooltips"

@@ -81,11 +81,14 @@ pub fn canonical(name: &str) -> String {
         "std::__2::",
         "std::__cxx11::",
         "std::__ndk1::",
+        "std::_V2::",
     ] {
         result = result.replace(abi, "std::");
     }
     // MSVC declares the public ios_base flags in its internal base class.
     result = result.replace("std::_Iosb::", "std::ios_base::");
+    result = result.replace("std::filesystem::__cxx11::", "std::filesystem::");
+    result = result.replace("std::chrono::_V2::", "std::chrono::");
     result.trim_start_matches("::").to_string()
 }
 
@@ -100,12 +103,38 @@ fn resolve<'a>(
     resolve_with_hover(entries, symbols, declaration, &Value::Null, roots, index)
 }
 
-fn msvc_map_owner(hover: &Value) -> Option<&'static str> {
+fn msvc_container_owner(hover: &Value) -> Option<&'static str> {
     let text = hover.pointer("/result/contents/value")?.as_str()?;
-    let mut owners = text
-        .lines()
-        .filter_map(|line| line.strip_prefix("// In _Tree<std::_Tmap_traits<"));
-    let traits = owners.next()?;
+    let mut owners = text.lines().filter_map(|line| {
+        [
+            (
+                "// In _Tree<std::_Tmap_traits<",
+                "std::map",
+                "std::multimap",
+            ),
+            (
+                "// In _Tree<std::_Tset_traits<",
+                "std::set",
+                "std::multiset",
+            ),
+            (
+                "// In _Hash<std::_Umap_traits<",
+                "std::unordered_map",
+                "std::unordered_multimap",
+            ),
+            (
+                "// In _Hash<std::_Uset_traits<",
+                "std::unordered_set",
+                "std::unordered_multiset",
+            ),
+        ]
+        .into_iter()
+        .find_map(|(prefix, single, multiple)| {
+            line.strip_prefix(prefix)
+                .map(|traits| (traits, single, multiple))
+        })
+    });
+    let (traits, single, multiple) = owners.next()?;
     if owners.next().is_some() {
         return None;
     }
@@ -118,8 +147,8 @@ fn msvc_map_owner(hover: &Value) -> Option<&'static str> {
             ',' if depth == 0 => last = offset + 1,
             '>' if depth == 0 && traits[offset..].trim() == ">>" => {
                 return match traits[last..offset].trim() {
-                    "false" => Some("std::map"),
-                    "true" => Some("std::multimap"),
+                    "false" => Some(single),
+                    "true" => Some(multiple),
                     _ => None,
                 };
             }
@@ -131,11 +160,15 @@ fn msvc_map_owner(hover: &Value) -> Option<&'static str> {
 }
 
 fn c_runtime_header(entry: &Entry, header: &str, path: &str) -> bool {
-    if !entry
+    let c_entry = entry
         .source_url
         .starts_with("https://en.cppreference.com/w/c/")
-        || entry.symbol.contains("::")
-    {
+        && !entry.symbol.contains("::");
+    let cpp_entry = entry
+        .source_url
+        .starts_with("https://en.cppreference.com/w/cpp/")
+        && entry.symbol.starts_with("std::");
+    if !c_entry && !cpp_entry {
         return false;
     }
     let public_header = if path.contains("/vc/tools/msvc/")
@@ -146,21 +179,44 @@ fn c_runtime_header(entry: &Entry, header: &str, path: &str) -> bool {
             "vcruntime_string.h" | "corecrt_memory.h" => "string.h",
             "corecrt_wstdio.h" => "stdio.h",
             "corecrt_wtime.h" => "time.h",
+            "corecrt_math.h" => "math.h",
+            "corecrt.h" if entry.symbol.rsplit("::").next() == Some("time_t") => "time.h",
+            "vcruntime.h" => "stddef.h",
             _ => return false,
         }
     } else if path.contains("/usr/include/") {
         match header {
             "FILE.h" | "__FILE.h" if path.contains("/bits/types/") => "stdio.h",
             "struct_tm.h" if path.contains("/bits/types/") => "time.h",
+            "time_t.h" | "clock_t.h" if path.contains("/bits/types/") => "time.h",
+            "mathcalls.h" | "mathcalls-helper-functions.h" if path.contains("/bits/") => "math.h",
+            "errno-base.h" | "errno.h" if path.contains("/asm-generic/") => "errno.h",
+            _ => return false,
+        }
+    } else if path.contains("/lib/clang/") && path.contains("/include/") {
+        match header {
+            "__stddef_null.h" | "__stddef_offsetof.h" | "__stddef_size_t.h" => "stddef.h",
             _ => return false,
         }
     } else {
         return false;
     };
-    entry
-        .headers
-        .iter()
-        .any(|candidate| candidate == public_header)
+    entry.headers.iter().any(|candidate| {
+        candidate == public_header
+            || (cpp_entry && crate::notes::cpp_c_header(public_header) == Some(candidate.as_str()))
+    })
+}
+
+fn provided_header(hover: &Value) -> Option<&str> {
+    let text = hover.pointer("/result/contents/value")?.as_str()?;
+    let mut headers = text.lines().filter_map(|line| {
+        line.trim()
+            .strip_prefix("provided by `<")
+            .or_else(|| line.trim().strip_prefix("Provided by `<"))?
+            .strip_suffix(">`")
+    });
+    let header = headers.next()?;
+    headers.next().is_none().then_some(header)
 }
 
 pub fn resolve_with_hover<'a>(
@@ -172,6 +228,32 @@ pub fn resolve_with_hover<'a>(
     index: &HashMap<String, Vec<usize>>,
 ) -> Option<&'a Entry> {
     let symbols = symbols.get("result")?.as_array()?;
+    // GCC's C compatibility headers can expose both a using declaration and
+    // the underlying C declaration. Every target must resolve to the same page.
+    if let Some(locations) = declaration
+        .get("result")
+        .and_then(Value::as_array)
+        .filter(|items| items.len() > 1)
+    {
+        let mut resolved: Option<&Entry> = None;
+        for location in locations {
+            let entry = resolve_with_hover(
+                entries,
+                &serde_json::json!({"result":symbols}),
+                &serde_json::json!({"result":[location]}),
+                hover,
+                roots,
+                index,
+            )?;
+            if resolved.is_some_and(|previous| {
+                previous.symbol != entry.symbol || previous.source_url != entry.source_url
+            }) {
+                return None;
+            }
+            resolved = Some(entry);
+        }
+        return resolved;
+    }
     let declaration_location = declaration.get("result").and_then(|value| {
         if let Some(array) = value.as_array() {
             (array.len() == 1).then(|| &array[0])
@@ -191,7 +273,20 @@ pub fn resolve_with_hover<'a>(
             info.pointer("/declarationRange/uri") == Some(uri)
                 && info.pointer("/declarationRange/range") == Some(range)
         });
-        let info = matching.next()?;
+        let info = matching.next().or_else(|| {
+            let text = hover.pointer("/result/contents/value")?.as_str()?;
+            let mut macros = symbols.iter().filter(|info| {
+                let Some(name) = info.get("name").and_then(Value::as_str) else {
+                    return false;
+                };
+                info.get("usr")
+                    .and_then(Value::as_str)
+                    .is_some_and(|usr| usr.ends_with(&format!("@macro@{name}")))
+                    && text.starts_with(&format!("### macro `{name}`"))
+            });
+            let info = macros.next()?;
+            macros.next().is_none().then_some(info)
+        })?;
         if matching.next().is_some() {
             return None;
         }
@@ -239,10 +334,13 @@ pub fn resolve_with_hover<'a>(
                 .and_then(|(_, relative)| relative.split_once('/'))
                 .is_some_and(|(_, relative)| relative.starts_with("c++/"))
             || normalized_path.contains("/vc/tools/msvc/"));
-    // MSVC shares a tree implementation between map and multimap. The instantiated
-    // traits in clangd's hover distinguish their different key-count semantics.
-    if standard_cpp && header == "xtree" && canonical(container) == "std::_Tree::" {
-        let owner = msvc_map_owner(hover)?;
+    // MSVC shares tree and hash implementations across public containers.
+    // clangd's instantiated traits identify the public owner and duplicate-key rules.
+    if standard_cpp
+        && ((header == "xtree" && canonical(container) == "std::_Tree::")
+            || (header == "xhash" && canonical(container) == "std::_Hash::"))
+    {
+        let owner = msvc_container_owner(hover)?;
         qualified = format!("{owner}::{name}");
     }
     let matches: Vec<_> = index
@@ -253,6 +351,13 @@ pub fn resolve_with_hover<'a>(
             entry.symbol == qualified
                 && (standard_cpp
                     || c_runtime_header(entry, header, &normalized_path)
+                    || (entry.symbol.starts_with("std::")
+                        && crate::notes::cpp_c_header(header).is_some_and(|cpp_header| {
+                            entry
+                                .headers
+                                .iter()
+                                .any(|candidate| candidate == cpp_header)
+                        }))
                     || (entry.kind == "macro"
                         && (normalized_path.contains("/vc/tools/msvc/")
                             || (normalized_path.contains("/windows kits/")
@@ -275,15 +380,58 @@ pub fn resolve_with_hover<'a>(
         .copied()
         .filter(|entry| entry.headers.iter().any(|candidate| candidate == header))
         .collect();
-    let candidates = if exact.is_empty() { preferred } else { exact };
+    let mut candidates = if exact.is_empty() { preferred } else { exact };
+    if candidates.len() > 1 && qualified.starts_with("std::vector::") {
+        if let Some(instance) = hover
+            .pointer("/result/contents/value")
+            .and_then(Value::as_str)
+            .and_then(|text| {
+                text.lines()
+                    .find_map(|line| line.strip_prefix("// In vector<"))
+            })
+        {
+            let boolean = instance.starts_with("bool>") || instance.starts_with("bool,");
+            candidates.retain(|entry| entry.source_url.contains("/vector_bool/") == boolean);
+        }
+    }
+    if candidates.len() > 1 {
+        if let Some(public_header) = provided_header(hover) {
+            let public: Vec<_> = candidates
+                .iter()
+                .copied()
+                .filter(|entry| {
+                    entry
+                        .headers
+                        .iter()
+                        .any(|candidate| candidate == public_header)
+                })
+                .collect();
+            if !public.is_empty() {
+                candidates = public;
+            }
+        }
+    }
     if candidates.len() == 1 || candidates.iter().all(|entry| entry.kind == "macro") {
         candidates.first().copied()
     } else if candidates.iter().all(|entry| {
         entry.kind == "function"
-            && entry
+            && (entry
                 .source_url
                 .starts_with("https://en.cppreference.com/w/c/")
+                || entry.headers.iter().any(|header| {
+                    ["cstdio", "cstdlib", "cstring", "cmath", "cctype", "ctime"]
+                        .contains(&header.as_str())
+                }))
     }) {
+        // C++ abs has separate integer and floating-point reference families.
+        // A shared public header alone cannot identify the selected overload.
+        if qualified == "std::abs"
+            && candidates
+                .iter()
+                .any(|entry| entry.source_url.ends_with("/fabs"))
+        {
+            return None;
+        }
         // Some C functions appear on both their own page and a shared family page.
         let mut dedicated = candidates
             .iter()
@@ -441,11 +589,91 @@ mod tests {
         assert!(resolve(&entries, &info, &declaration, &[], &index(&entries)).is_none());
         for text in [
             "// In _Tree<std::_Tmap_traits<int, int, Less, Alloc, Unknown>>",
-            "// In _Tree<std::_Tset_traits<int, Less, Alloc, false>>",
+            "// In _Tree<std::_Tset_traits<int, Less, Alloc, Unknown>>",
             "// In _Tree<std::_Tmap_traits<int, int, Less, Alloc, false>>\n// In _Tree<std::_Tmap_traits<int, int, Less, Alloc, true>>",
         ] {
-            assert!(msvc_map_owner(&json!({"result":{"contents":{"value":text}}})).is_none());
+            assert!(msvc_container_owner(&json!({"result":{"contents":{"value":text}}})).is_none());
         }
+    }
+
+    #[test]
+    fn msvc_traits_keep_ordered_and_hash_container_owners_distinct() {
+        for (text, expected) in [
+            (
+                "// In _Tree<std::_Tset_traits<int, Less, Alloc, false>>",
+                "std::set",
+            ),
+            (
+                "// In _Tree<std::_Tset_traits<int, Less, Alloc, true>>",
+                "std::multiset",
+            ),
+            (
+                "// In _Hash<std::_Umap_traits<int, int, Hash, Equal, Alloc, false>>",
+                "std::unordered_map",
+            ),
+            (
+                "// In _Hash<std::_Uset_traits<int, Hash, Equal, Alloc, true>>",
+                "std::unordered_multiset",
+            ),
+        ] {
+            let hover = json!({"result":{"contents":{"value":text}}});
+            assert_eq!(msvc_container_owner(&hover), Some(expected));
+        }
+    }
+
+    #[test]
+    fn compatibility_declarations_must_all_resolve_outside_the_project() {
+        let entries = vec![Entry {
+            symbol: "malloc".into(),
+            headers: vec!["stdlib.h".into()],
+            ..Entry::default()
+        }];
+        let range = json!({"start":{"line":1,"character":0},"end":{"line":1,"character":6}});
+        let locations = json!([
+            {"uri":uri("/usr/include/c++/15/stdlib.h"),"range":range},
+            {"uri":uri("/usr/include/stdlib.h"),"range":range}
+        ]);
+        let symbols = json!({"result":[
+            {"name":"malloc","declarationRange":locations[0]},
+            {"name":"malloc","declarationRange":locations[1]}
+        ]});
+        let declaration = json!({"result":locations});
+        assert_eq!(
+            resolve(&entries, &symbols, &declaration, &[], &index(&entries))
+                .unwrap()
+                .symbol,
+            "malloc"
+        );
+        let roots = [url::Url::parse(&uri("/usr/include/c++/15/")).unwrap()];
+        assert!(resolve(&entries, &symbols, &declaration, &roots, &index(&entries)).is_none());
+    }
+
+    #[test]
+    fn macro_hover_uses_the_definition_instead_of_the_expanded_function() {
+        let entries = vec![Entry {
+            symbol: "stdin".into(),
+            kind: "macro".into(),
+            headers: vec!["stdio.h".into()],
+            ..Entry::default()
+        }];
+        let symbols = json!({"result":[{"name":"fgetc"},{"name":"stdin","usr":"c:@macro@stdin"}]});
+        let declaration = json!({"result":[{"uri":uri("/usr/include/stdio.h"),"range":{}}]});
+        let hover = json!({"result":{"contents":{"value":"### macro `stdin`  \nprovided by `<stdio.h>`  "}}});
+        assert_eq!(provided_header(&hover), Some("stdio.h"));
+        assert_eq!(
+            resolve_with_hover(
+                &entries,
+                &symbols,
+                &declaration,
+                &hover,
+                &[],
+                &index(&entries)
+            )
+            .unwrap()
+            .symbol,
+            "stdin"
+        );
+        assert!(resolve(&entries, &symbols, &declaration, &[], &index(&entries)).is_none());
     }
 
     #[test]

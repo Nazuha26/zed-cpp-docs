@@ -598,5 +598,1698 @@
     "language": "c",
     "cppreference": "https://en.cppreference.com/w/c/error/assert",
     "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.2.1.1"
+  },
+  {
+    "symbol": "sprintf",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/fprintf",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.6.6",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "sscanf",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/fscanf",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.6.7",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "fscanf",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/fscanf",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.6.2",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "getchar",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/getchar",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.7.6",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "putchar",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/putchar",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.7.8",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "puts",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/puts",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.7.9",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "rewind",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/rewind",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.9.5",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "clearerr",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/clearerr",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.10.1",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "remove",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/remove",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.4.1",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "rename",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/rename",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.4.2",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "tmpfile",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/tmpfile",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.4.3",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "setvbuf",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/setvbuf",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.5.6",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "ungetc",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/ungetc",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.7.10",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "fgetpos",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/fgetpos",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.9.1",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "fsetpos",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/fsetpos",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.9.3",
+    "category": "C I/O"
+  },
+  {
+    "symbol": "fpos_t",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/fpos_t",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.1",
+    "category": "C types"
+  },
+  {
+    "symbol": "stdin",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/std_streams",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.1",
+    "category": "C streams"
+  },
+  {
+    "symbol": "stdout",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/std_streams",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.1",
+    "category": "C streams"
+  },
+  {
+    "symbol": "stderr",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/io/std_streams",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.21.1",
+    "category": "C streams"
+  },
+  {
+    "symbol": "atoi",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/atoi",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.1.2",
+    "category": "C conversions"
+  },
+  {
+    "symbol": "atol",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/atoi",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.1.2",
+    "category": "C conversions"
+  },
+  {
+    "symbol": "atoll",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/atoi",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.1.2",
+    "category": "C conversions"
+  },
+  {
+    "symbol": "strtoll",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/strtol",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.1.4",
+    "category": "C conversions"
+  },
+  {
+    "symbol": "strtoul",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/strtoul",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.1.4",
+    "category": "C conversions"
+  },
+  {
+    "symbol": "strtoull",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/strtoul",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.1.4",
+    "category": "C conversions"
+  },
+  {
+    "symbol": "abs",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/abs",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.6.1",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "labs",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/abs",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.6.1",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "div",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/div",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.6.2",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "ldiv",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/div",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.6.2",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "bsearch",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/algorithm/bsearch",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.5.1",
+    "category": "C algorithms"
+  },
+  {
+    "symbol": "rand",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/random/rand",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.2.1",
+    "category": "C randomness"
+  },
+  {
+    "symbol": "srand",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/random/srand",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.2.2",
+    "category": "C randomness"
+  },
+  {
+    "symbol": "getenv",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/program/getenv",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.4.6",
+    "category": "C environment"
+  },
+  {
+    "symbol": "exit",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/program/exit",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.4.4",
+    "category": "C environment"
+  },
+  {
+    "symbol": "abort",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/program/abort",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22.4.1",
+    "category": "C environment"
+  },
+  {
+    "symbol": "EXIT_SUCCESS",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/program/EXIT_status",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22",
+    "category": "C constants"
+  },
+  {
+    "symbol": "EXIT_FAILURE",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/program/EXIT_status",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22",
+    "category": "C constants"
+  },
+  {
+    "symbol": "RAND_MAX",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/random/RAND_MAX",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.22",
+    "category": "C constants"
+  },
+  {
+    "symbol": "strcat",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/strcat",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.24",
+    "category": "C strings"
+  },
+  {
+    "symbol": "strncat",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/strncat",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.24",
+    "category": "C strings"
+  },
+  {
+    "symbol": "strrchr",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/strrchr",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.24",
+    "category": "C strings"
+  },
+  {
+    "symbol": "strcspn",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/strcspn",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.24",
+    "category": "C strings"
+  },
+  {
+    "symbol": "strspn",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/strspn",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.24",
+    "category": "C strings"
+  },
+  {
+    "symbol": "strpbrk",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/strpbrk",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.24",
+    "category": "C strings"
+  },
+  {
+    "symbol": "strtok",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/strtok",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.24",
+    "category": "C strings"
+  },
+  {
+    "symbol": "memchr",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/memchr",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.24",
+    "category": "C strings"
+  },
+  {
+    "symbol": "strerror",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/strerror",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.24.6.2",
+    "category": "C errors"
+  },
+  {
+    "symbol": "isalpha",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/isalpha",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.4",
+    "category": "C characters"
+  },
+  {
+    "symbol": "isdigit",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/isdigit",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.4",
+    "category": "C characters"
+  },
+  {
+    "symbol": "isspace",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/isspace",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.4",
+    "category": "C characters"
+  },
+  {
+    "symbol": "tolower",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/tolower",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.4",
+    "category": "C characters"
+  },
+  {
+    "symbol": "toupper",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/string/byte/toupper",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.4",
+    "category": "C characters"
+  },
+  {
+    "symbol": "sqrt",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/sqrt",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "pow",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/pow",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "fabs",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/fabs",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "floor",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/floor",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "ceil",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/ceil",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "round",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/round",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "sin",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/sin",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "cos",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/cos",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "tan",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/tan",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "asin",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/asin",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "acos",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/acos",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "atan",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/atan",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "atan2",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/atan2",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "exp",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/exp",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "log",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/log",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "log10",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/log10",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "fmod",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/numeric/math/fmod",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.12",
+    "category": "C mathematics"
+  },
+  {
+    "symbol": "time",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/chrono/time",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.27",
+    "category": "C time"
+  },
+  {
+    "symbol": "difftime",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/chrono/difftime",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.27",
+    "category": "C time"
+  },
+  {
+    "symbol": "clock",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/chrono/clock",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.27",
+    "category": "C time",
+    "platform_notes": [
+      "https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/clock?view=msvc-170"
+    ]
+  },
+  {
+    "symbol": "localtime",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/chrono/localtime",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.27",
+    "category": "C time"
+  },
+  {
+    "symbol": "gmtime",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/chrono/gmtime",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.27",
+    "category": "C time"
+  },
+  {
+    "symbol": "mktime",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/chrono/mktime",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.27",
+    "category": "C time"
+  },
+  {
+    "symbol": "strftime",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/chrono/strftime",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.27",
+    "category": "C time"
+  },
+  {
+    "symbol": "time_t",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/chrono/time_t",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.27.1",
+    "category": "C types"
+  },
+  {
+    "symbol": "clock_t",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/chrono/clock_t",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.27.1",
+    "category": "C types",
+    "platform_notes": [
+      "https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/clock?view=msvc-170"
+    ]
+  },
+  {
+    "symbol": "CLOCKS_PER_SEC",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/chrono/CLOCKS_PER_SEC",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.27.1",
+    "category": "C constants"
+  },
+  {
+    "symbol": "errno",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/error/errno",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.5",
+    "category": "C errors"
+  },
+  {
+    "symbol": "ERANGE",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/error/errno_macros",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.5",
+    "category": "C errors"
+  },
+  {
+    "symbol": "NULL",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/types/NULL",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.19",
+    "category": "C constants"
+  },
+  {
+    "symbol": "offsetof",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/types/offsetof",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.19",
+    "category": "C layout"
+  },
+  {
+    "symbol": "SIZE_MAX",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/types/limits",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#7.20.3",
+    "category": "C limits"
+  },
+  {
+    "symbol": "INT_MAX",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/types/limits",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#5.2.4.2.1",
+    "category": "C limits"
+  },
+  {
+    "symbol": "INT_MIN",
+    "language": "c",
+    "cppreference": "https://en.cppreference.com/w/c/types/limits",
+    "standard": "https://port70.net/~nsz/c/c11/n1570.html#5.2.4.2.1",
+    "category": "C limits"
+  },
+  {
+    "symbol": "std::basic_string::at",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/at",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::clear",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/clear",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::insert",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/insert",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::replace",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/replace",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::compare",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/compare",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::rfind",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/rfind",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::find_first_of",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/find_first_of",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::find_last_of",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/find_last_of",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::find_first_not_of",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/find_first_not_of",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::find_last_not_of",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/find_last_not_of",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::resize",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/resize",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::reserve",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/reserve",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::capacity",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/capacity",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::push_back",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/push_back",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::pop_back",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/pop_back",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::front",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/front",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::basic_string::back",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/back",
+    "standard": "https://eel.is/c++draft/string.classes",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::stoi",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/stol",
+    "standard": "https://eel.is/c++draft/string.conversions",
+    "category": "C++ conversions"
+  },
+  {
+    "symbol": "std::stol",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/stol",
+    "standard": "https://eel.is/c++draft/string.conversions",
+    "category": "C++ conversions"
+  },
+  {
+    "symbol": "std::stoll",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/stol",
+    "standard": "https://eel.is/c++draft/string.conversions",
+    "category": "C++ conversions"
+  },
+  {
+    "symbol": "std::stoul",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/stoul",
+    "standard": "https://eel.is/c++draft/string.conversions",
+    "category": "C++ conversions"
+  },
+  {
+    "symbol": "std::stoull",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/stoul",
+    "standard": "https://eel.is/c++draft/string.conversions",
+    "category": "C++ conversions"
+  },
+  {
+    "symbol": "std::stof",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/stof",
+    "standard": "https://eel.is/c++draft/string.conversions",
+    "category": "C++ conversions"
+  },
+  {
+    "symbol": "std::stod",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/stof",
+    "standard": "https://eel.is/c++draft/string.conversions",
+    "category": "C++ conversions"
+  },
+  {
+    "symbol": "std::stold",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/stof",
+    "standard": "https://eel.is/c++draft/string.conversions",
+    "category": "C++ conversions"
+  },
+  {
+    "symbol": "std::to_string",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string/to_string",
+    "standard": "https://eel.is/c++draft/string.conversions",
+    "category": "C++ conversions"
+  },
+  {
+    "symbol": "std::string_view",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/string/basic_string_view",
+    "standard": "https://eel.is/c++draft/string.view",
+    "category": "C++ strings"
+  },
+  {
+    "symbol": "std::find_if",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/find",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::count_if",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/count",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::all_of",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/all_any_none_of",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::any_of",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/all_any_none_of",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::none_of",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/all_any_none_of",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::copy",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/copy",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::copy_if",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/copy",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::copy_n",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/copy_n",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::transform",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/transform",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::remove",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/remove",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::remove_if",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/remove",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::unique",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/unique",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::replace",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/replace",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::replace_if",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/replace",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::fill_n",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/fill_n",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::stable_sort",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/stable_sort",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::partial_sort",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/partial_sort",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::nth_element",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/nth_element",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::upper_bound",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/upper_bound",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::equal_range",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/equal_range",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::clamp",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/clamp",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::min_element",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/min_element",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::max_element",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/max_element",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::rotate",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/rotate",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::is_sorted",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/algorithm/is_sorted",
+    "standard": "https://eel.is/c++draft/algorithms",
+    "category": "C++ algorithms"
+  },
+  {
+    "symbol": "std::deque::push_front",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/deque/push_front",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::deque::push_back",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/deque/push_back",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::deque::pop_front",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/deque/pop_front",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::deque::pop_back",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/deque/pop_back",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::deque::front",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/deque/front",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::deque::back",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/deque/back",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::deque::size",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/deque/size",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::deque::empty",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/deque/empty",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::list::push_front",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/list/push_front",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::list::push_back",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/list/push_back",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::list::pop_front",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/list/pop_front",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::list::pop_back",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/list/pop_back",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::list::front",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/list/front",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::list::back",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/list/back",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::list::size",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/list/size",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::list::empty",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/list/empty",
+    "standard": "https://eel.is/c++draft/sequences",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::list::sort",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/list/sort",
+    "standard": "https://eel.is/c++draft/list.ops",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::list::remove",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/list/remove",
+    "standard": "https://eel.is/c++draft/list.ops",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::list::unique",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/list/unique",
+    "standard": "https://eel.is/c++draft/list.ops",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::queue::push",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/queue/push",
+    "standard": "https://eel.is/c++draft/container.adaptors",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::queue::pop",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/queue/pop",
+    "standard": "https://eel.is/c++draft/container.adaptors",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::queue::front",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/queue/front",
+    "standard": "https://eel.is/c++draft/container.adaptors",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::queue::back",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/queue/back",
+    "standard": "https://eel.is/c++draft/container.adaptors",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::queue::size",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/queue/size",
+    "standard": "https://eel.is/c++draft/container.adaptors",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::queue::empty",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/queue/empty",
+    "standard": "https://eel.is/c++draft/container.adaptors",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::stack::push",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/stack/push",
+    "standard": "https://eel.is/c++draft/container.adaptors",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::stack::pop",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/stack/pop",
+    "standard": "https://eel.is/c++draft/container.adaptors",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::stack::top",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/stack/top",
+    "standard": "https://eel.is/c++draft/container.adaptors",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::stack::size",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/stack/size",
+    "standard": "https://eel.is/c++draft/container.adaptors",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::stack::empty",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/stack/empty",
+    "standard": "https://eel.is/c++draft/container.adaptors",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::priority_queue",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/priority_queue",
+    "standard": "https://eel.is/c++draft/priqueue",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::priority_queue::push",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/priority_queue/push",
+    "standard": "https://eel.is/c++draft/priqueue",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::priority_queue::pop",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/priority_queue/pop",
+    "standard": "https://eel.is/c++draft/priqueue",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::priority_queue::top",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/priority_queue/top",
+    "standard": "https://eel.is/c++draft/priqueue",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::priority_queue::size",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/priority_queue/size",
+    "standard": "https://eel.is/c++draft/priqueue",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::priority_queue::empty",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/priority_queue/empty",
+    "standard": "https://eel.is/c++draft/priqueue",
+    "category": "C++ adaptors"
+  },
+  {
+    "symbol": "std::set::find",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/set/find",
+    "standard": "https://eel.is/c++draft/associative",
+    "category": "C++ associative containers"
+  },
+  {
+    "symbol": "std::set::count",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/set/count",
+    "standard": "https://eel.is/c++draft/associative",
+    "category": "C++ associative containers"
+  },
+  {
+    "symbol": "std::set::erase",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/set/erase",
+    "standard": "https://eel.is/c++draft/associative",
+    "category": "C++ associative containers"
+  },
+  {
+    "symbol": "std::set::insert",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/set/insert",
+    "standard": "https://eel.is/c++draft/associative",
+    "category": "C++ associative containers"
+  },
+  {
+    "symbol": "std::unordered_map::find",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/unordered_map/find",
+    "standard": "https://eel.is/c++draft/unord",
+    "category": "C++ associative containers"
+  },
+  {
+    "symbol": "std::unordered_map::count",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/unordered_map/count",
+    "standard": "https://eel.is/c++draft/unord",
+    "category": "C++ associative containers"
+  },
+  {
+    "symbol": "std::unordered_map::erase",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/unordered_map/erase",
+    "standard": "https://eel.is/c++draft/unord",
+    "category": "C++ associative containers"
+  },
+  {
+    "symbol": "std::unordered_map::insert",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/unordered_map/insert",
+    "standard": "https://eel.is/c++draft/unord",
+    "category": "C++ associative containers"
+  },
+  {
+    "symbol": "std::unordered_map::at",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/unordered_map/at",
+    "standard": "https://eel.is/c++draft/unord",
+    "category": "C++ associative containers"
+  },
+  {
+    "symbol": "std::unordered_map::operator[]",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/unordered_map/operator_at",
+    "standard": "https://eel.is/c++draft/unord",
+    "category": "C++ associative containers"
+  },
+  {
+    "symbol": "std::vector::begin",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/vector/begin",
+    "standard": "https://eel.is/c++draft/vector",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::vector::end",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/vector/end",
+    "standard": "https://eel.is/c++draft/vector",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::vector::assign",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/vector/assign",
+    "standard": "https://eel.is/c++draft/vector",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::vector::emplace",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/vector/emplace",
+    "standard": "https://eel.is/c++draft/vector",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::vector::swap",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/container/vector/swap",
+    "standard": "https://eel.is/c++draft/vector",
+    "category": "C++ containers"
+  },
+  {
+    "symbol": "std::ifstream",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_ifstream",
+    "standard": "https://eel.is/c++draft/file.streams",
+    "category": "C++ streams"
+  },
+  {
+    "symbol": "std::ofstream",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_ofstream",
+    "standard": "https://eel.is/c++draft/file.streams",
+    "category": "C++ streams"
+  },
+  {
+    "symbol": "std::fstream",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_fstream",
+    "standard": "https://eel.is/c++draft/file.streams",
+    "category": "C++ streams"
+  },
+  {
+    "symbol": "std::ostringstream",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_ostringstream",
+    "standard": "https://eel.is/c++draft/string.streams",
+    "category": "C++ streams"
+  },
+  {
+    "symbol": "std::stringstream",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_stringstream",
+    "standard": "https://eel.is/c++draft/string.streams",
+    "category": "C++ streams"
+  },
+  {
+    "symbol": "std::istream",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_istream",
+    "standard": "https://eel.is/c++draft/input.streams",
+    "category": "C++ streams"
+  },
+  {
+    "symbol": "std::ostream",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_ostream",
+    "standard": "https://eel.is/c++draft/output.streams",
+    "category": "C++ streams"
+  },
+  {
+    "symbol": "std::basic_ifstream::open",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_ifstream/open",
+    "standard": "https://eel.is/c++draft/file.streams",
+    "category": "C++ file streams"
+  },
+  {
+    "symbol": "std::basic_ifstream::close",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_ifstream/close",
+    "standard": "https://eel.is/c++draft/file.streams",
+    "category": "C++ file streams"
+  },
+  {
+    "symbol": "std::basic_ifstream::is_open",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_ifstream/is_open",
+    "standard": "https://eel.is/c++draft/file.streams",
+    "category": "C++ file streams"
+  },
+  {
+    "symbol": "std::basic_ofstream::open",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_ofstream/open",
+    "standard": "https://eel.is/c++draft/file.streams",
+    "category": "C++ file streams"
+  },
+  {
+    "symbol": "std::basic_ofstream::close",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_ofstream/close",
+    "standard": "https://eel.is/c++draft/file.streams",
+    "category": "C++ file streams"
+  },
+  {
+    "symbol": "std::basic_ofstream::is_open",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_ofstream/is_open",
+    "standard": "https://eel.is/c++draft/file.streams",
+    "category": "C++ file streams"
+  },
+  {
+    "symbol": "std::basic_istream::get",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_istream/get",
+    "standard": "https://eel.is/c++draft/istream.unformatted",
+    "category": "C++ input"
+  },
+  {
+    "symbol": "std::basic_istream::peek",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_istream/peek",
+    "standard": "https://eel.is/c++draft/istream.unformatted",
+    "category": "C++ input"
+  },
+  {
+    "symbol": "std::basic_istream::read",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_istream/read",
+    "standard": "https://eel.is/c++draft/istream.unformatted",
+    "category": "C++ input"
+  },
+  {
+    "symbol": "std::basic_istream::ignore",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_istream/ignore",
+    "standard": "https://eel.is/c++draft/istream.unformatted",
+    "category": "C++ input"
+  },
+  {
+    "symbol": "std::basic_istream::gcount",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_istream/gcount",
+    "standard": "https://eel.is/c++draft/istream.unformatted",
+    "category": "C++ input"
+  },
+  {
+    "symbol": "std::basic_ostream::put",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_ostream/put",
+    "standard": "https://eel.is/c++draft/ostream.unformatted",
+    "category": "C++ output"
+  },
+  {
+    "symbol": "std::basic_ostream::write",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_ostream/write",
+    "standard": "https://eel.is/c++draft/ostream.unformatted",
+    "category": "C++ output"
+  },
+  {
+    "symbol": "std::basic_ostream::flush",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/basic_ostream/flush",
+    "standard": "https://eel.is/c++draft/ostream.unformatted",
+    "category": "C++ output"
+  },
+  {
+    "symbol": "std::endl",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/manip/endl",
+    "standard": "https://eel.is/c++draft/ostream.manip",
+    "category": "C++ manipulators"
+  },
+  {
+    "symbol": "std::flush",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/manip/flush",
+    "standard": "https://eel.is/c++draft/ostream.manip",
+    "category": "C++ manipulators"
+  },
+  {
+    "symbol": "std::cin",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/cin",
+    "standard": "https://eel.is/c++draft/iostream.objects",
+    "category": "C++ standard streams"
+  },
+  {
+    "symbol": "std::cout",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/cout",
+    "standard": "https://eel.is/c++draft/iostream.objects",
+    "category": "C++ standard streams"
+  },
+  {
+    "symbol": "std::cerr",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/io/cerr",
+    "standard": "https://eel.is/c++draft/iostream.objects",
+    "category": "C++ standard streams"
+  },
+  {
+    "symbol": "std::begin",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/iterator/begin",
+    "standard": "https://eel.is/c++draft/iterator.operations",
+    "category": "C++ iterators"
+  },
+  {
+    "symbol": "std::end",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/iterator/end",
+    "standard": "https://eel.is/c++draft/iterator.operations",
+    "category": "C++ iterators"
+  },
+  {
+    "symbol": "std::cbegin",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/iterator/begin",
+    "standard": "https://eel.is/c++draft/iterator.operations",
+    "category": "C++ iterators"
+  },
+  {
+    "symbol": "std::cend",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/iterator/end",
+    "standard": "https://eel.is/c++draft/iterator.operations",
+    "category": "C++ iterators"
+  },
+  {
+    "symbol": "std::distance",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/iterator/distance",
+    "standard": "https://eel.is/c++draft/iterator.operations",
+    "category": "C++ iterators"
+  },
+  {
+    "symbol": "std::advance",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/iterator/advance",
+    "standard": "https://eel.is/c++draft/iterator.operations",
+    "category": "C++ iterators"
+  },
+  {
+    "symbol": "std::next",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/iterator/next",
+    "standard": "https://eel.is/c++draft/iterator.operations",
+    "category": "C++ iterators"
+  },
+  {
+    "symbol": "std::prev",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/iterator/prev",
+    "standard": "https://eel.is/c++draft/iterator.operations",
+    "category": "C++ iterators"
+  },
+  {
+    "symbol": "std::filesystem::path",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/path",
+    "standard": "https://eel.is/c++draft/fs.class.path",
+    "category": "C++ filesystem"
+  },
+  {
+    "symbol": "std::filesystem::exists",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/exists",
+    "standard": "https://eel.is/c++draft/fs.op.funcs",
+    "category": "C++ filesystem"
+  },
+  {
+    "symbol": "std::filesystem::file_size",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/file_size",
+    "standard": "https://eel.is/c++draft/fs.op.funcs",
+    "category": "C++ filesystem"
+  },
+  {
+    "symbol": "std::filesystem::is_regular_file",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/is_regular_file",
+    "standard": "https://eel.is/c++draft/fs.op.funcs",
+    "category": "C++ filesystem"
+  },
+  {
+    "symbol": "std::filesystem::is_directory",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/is_directory",
+    "standard": "https://eel.is/c++draft/fs.op.funcs",
+    "category": "C++ filesystem"
+  },
+  {
+    "symbol": "std::filesystem::create_directory",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/create_directory",
+    "standard": "https://eel.is/c++draft/fs.op.funcs",
+    "category": "C++ filesystem"
+  },
+  {
+    "symbol": "std::filesystem::create_directories",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/create_directory",
+    "standard": "https://eel.is/c++draft/fs.op.funcs",
+    "category": "C++ filesystem"
+  },
+  {
+    "symbol": "std::filesystem::remove",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/remove",
+    "standard": "https://eel.is/c++draft/fs.op.funcs",
+    "category": "C++ filesystem"
+  },
+  {
+    "symbol": "std::filesystem::rename",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/rename",
+    "standard": "https://eel.is/c++draft/fs.op.funcs",
+    "category": "C++ filesystem"
+  },
+  {
+    "symbol": "std::filesystem::current_path",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/current_path",
+    "standard": "https://eel.is/c++draft/fs.op.funcs",
+    "category": "C++ filesystem"
+  },
+  {
+    "symbol": "std::filesystem::directory_iterator",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/directory_iterator",
+    "standard": "https://eel.is/c++draft/fs.class.directory.iterator",
+    "category": "C++ filesystem"
+  },
+  {
+    "symbol": "std::filesystem::path::filename",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/path/filename",
+    "standard": "https://eel.is/c++draft/fs.class.path",
+    "category": "C++ filesystem paths"
+  },
+  {
+    "symbol": "std::filesystem::path::stem",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/path/stem",
+    "standard": "https://eel.is/c++draft/fs.class.path",
+    "category": "C++ filesystem paths"
+  },
+  {
+    "symbol": "std::filesystem::path::extension",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/path/extension",
+    "standard": "https://eel.is/c++draft/fs.class.path",
+    "category": "C++ filesystem paths"
+  },
+  {
+    "symbol": "std::filesystem::path::parent_path",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/path/parent_path",
+    "standard": "https://eel.is/c++draft/fs.class.path",
+    "category": "C++ filesystem paths"
+  },
+  {
+    "symbol": "std::filesystem::path::empty",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/path/empty",
+    "standard": "https://eel.is/c++draft/fs.class.path",
+    "category": "C++ filesystem paths"
+  },
+  {
+    "symbol": "std::filesystem::path::is_absolute",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/path/is_absrel",
+    "standard": "https://eel.is/c++draft/fs.class.path",
+    "category": "C++ filesystem paths"
+  },
+  {
+    "symbol": "std::filesystem::path::string",
+    "language": "cpp",
+    "cppreference": "https://en.cppreference.com/w/cpp/filesystem/path/string",
+    "standard": "https://eel.is/c++draft/fs.class.path",
+    "category": "C++ filesystem paths"
   }
 ]

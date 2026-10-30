@@ -16,7 +16,8 @@ def check(entry, compiler, language, standard, run):
             command.extend(["-o", str(executable)])
         else:
             command.append("-fsyntax-only")
-        result = subprocess.run(command + ["-"], input=entry["example"], text=True, capture_output=True, timeout=60)
+        libraries = ["-lm"] if run and language == "c" and os.name != "nt" else []
+        result = subprocess.run(command + ["-"] + libraries, input=entry["example"], text=True, capture_output=True, timeout=60)
         assert result.returncode == 0, f"{entry['symbol']} ({standard}): {result.stderr}"
         if run:
             result = subprocess.run([str(executable)], input="42\n", text=True, capture_output=True, cwd=temporary, timeout=10)

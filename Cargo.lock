@@ -1312,7 +1312,7 @@ dependencies = [
 
 [[package]]
 name = "zed-cpp-docs-extension"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "serde",
  "zed_extension_api",
@@ -1320,7 +1320,7 @@ dependencies = [
 
 [[package]]
 name = "zed-cpp-docs-proxy"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "lzma-rs",
  "percent-encoding",

@@ -911,5 +911,2175 @@
     "returns": "No value. This is a debugging check, not a substitute for validating user input or handling recoverable errors.",
     "members": "",
     "example": "#include <assert.h>\n\nint main(void) {\n    int value = 42;\n    assert(value > 0);\n    return value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "sprintf",
+    "summary": "Format output into a character array, including a trailing null character. There is no destination-size argument: the caller must guarantee sufficient space. Source and destination objects must not overlap. Use snprintf when the output length is not already bounded.",
+    "signature": "int sprintf(char* buffer, const char* format, ...);",
+    "parameters": "- `buffer`: destination with enough space for all output and a terminator.\n- `format`, `...`: format string and correctly typed arguments.",
+    "returns": "The number of characters stored, excluding the terminator, or a negative value on encoding error.",
+    "members": "",
+    "example": "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    char buffer[32];\n    int count = sprintf(buffer, \"value = %d\", 42);\n    return count == 10 && strcmp(buffer, \"value = 42\") == 0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "sscanf",
+    "summary": "Read formatted values from a null-terminated string. Conversions must match the destination pointer types. Limit %s and %[ with a field width. For checked numeric range handling prefer strtol or strtod: out-of-range numeric scanf conversions have undefined behavior.",
+    "signature": "int sscanf(const char* text, const char* format, ...);",
+    "parameters": "- `text` or `stream`: input source.\n- `format`: conversion format.\n- `...`: pointers receiving the converted values.",
+    "returns": "The number of assignments made, possibly zero, or EOF if input fails before the first conversion completes. Check the count before using output objects.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    int value = 0;\n    char word[8];\n    int count = sscanf(\"42 hello\", \"%d %7s\", &value, word);\n    return count == 2 && value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "fscanf",
+    "summary": "Read formatted values from a stream. Most conversions skip leading whitespace, while %c and %[ do not. Field widths protect character buffers; they do not make out-of-range numeric conversions safe.",
+    "signature": "int fscanf(FILE* stream, const char* format, ...);",
+    "parameters": "- `text` or `stream`: input source.\n- `format`: conversion format.\n- `...`: pointers receiving the converted values.",
+    "returns": "The number of assignments made, possibly zero, or EOF if input fails before the first conversion completes. Check the count before using output objects.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    FILE* file = tmpfile();\n    if (!file)\n        return 1;\n    fputs(\"42\", file);\n    rewind(file);\n    int value = 0;\n    int count = fscanf(file, \"%d\", &value);\n    fclose(file);\n    return count == 1 && value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "getchar",
+    "summary": "Read one character from standard input. Store the result in int to distinguish all unsigned char values from EOF.",
+    "signature": "int getchar(void);",
+    "parameters": "No parameters.",
+    "returns": "The input byte converted from unsigned char to int, or EOF on end of input or error.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    int character = getchar();\n    return character == '4' ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "putchar",
+    "summary": "Write one character to standard output after conversion to unsigned char.",
+    "signature": "int putchar(int character);",
+    "parameters": "- `character`: byte to output.",
+    "returns": "The written byte converted to int, or EOF on failure.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    return putchar('A') == EOF;\n}\n"
+  },
+  {
+    "symbol": "puts",
+    "summary": "Write a null-terminated string to standard output and then append a newline. The string terminator itself is not written.",
+    "signature": "int puts(const char* text);",
+    "parameters": "- `text`: null-terminated string.",
+    "returns": "A nonnegative value on success, or EOF on a write error. A successful result is not a character count.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    return puts(\"hello\") == EOF;\n}\n"
+  },
+  {
+    "symbol": "rewind",
+    "summary": "Move a stream to its beginning and clear its error and end-of-file indicators. Unlike fseek, rewind returns no status; use fseek when a positioning result is needed.",
+    "signature": "void rewind(FILE* stream);",
+    "parameters": "- `stream`: seekable open stream.",
+    "returns": "No return value. A positioning failure cannot be detected from a return code.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    FILE* file = tmpfile();\n    if (!file)\n        return 1;\n    fputs(\"abc\", file);\n    rewind(file);\n    int character = fgetc(file);\n    fclose(file);\n    return character == 'a' ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "clearerr",
+    "summary": "Clear the error and end-of-file indicators of a stream. This changes the indicators, not the underlying cause of a failed read or write.",
+    "signature": "void clearerr(FILE* stream);",
+    "parameters": "- `stream`: open stream whose indicators should be reset.",
+    "returns": "No return value.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    FILE* file = tmpfile();\n    if (!file)\n        return 1;\n    fgetc(file);\n    clearerr(file);\n    int ended = feof(file);\n    fclose(file);\n    return ended ? 1 : 0;\n}\n"
+  },
+  {
+    "symbol": "remove",
+    "summary": "Delete a file named by a path. The behavior for a file that is still open is implementation-defined in ISO C, so close streams before removal. Directory removal is platform-dependent.",
+    "signature": "int remove(const char* path);",
+    "parameters": "- `path`: null-terminated name of the file to remove.",
+    "returns": "Zero on success, nonzero on failure.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    FILE* file = fopen(\"temporary.txt\", \"w\");\n    if (!file)\n        return 1;\n    fclose(file);\n    return remove(\"temporary.txt\") == 0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "rename",
+    "summary": "Change the name of a file. Close open streams first for portability. If the destination already exists, ISO C leaves the behavior implementation-defined; do not assume replacement works the same on every platform.",
+    "signature": "int rename(const char* oldName, const char* newName);",
+    "parameters": "- `oldName`: existing file name.\n- `newName`: desired name.",
+    "returns": "Zero on success, nonzero on failure; on failure the original file keeps its original name.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    FILE* file = fopen(\"old.txt\", \"w\");\n    if (!file)\n        return 1;\n    fclose(file);\n    return rename(\"old.txt\", \"new.txt\") == 0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "tmpfile",
+    "summary": "Create a temporary binary update stream, opened as if in wb+ mode. The file is automatically removed when the stream is closed or the program terminates normally.",
+    "signature": "FILE* tmpfile(void);",
+    "parameters": "No parameters.",
+    "returns": "A stream pointer on success, or a null pointer if creation fails. Close a successful stream with fclose.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    FILE* file = tmpfile();\n    if (!file)\n        return 1;\n    return fclose(file) == 0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "setvbuf",
+    "summary": "Choose buffering for a stream before any other operation on that stream, apart from an unsuccessful setvbuf call. A caller-supplied buffer must stay alive until the stream is closed.",
+    "signature": "int setvbuf(FILE* stream, char* buffer, int mode, size_t size);",
+    "parameters": "- `stream`: newly opened stream.\n- `buffer`: caller-owned buffer, or null for library-managed storage.\n- `mode`: _IOFBF, _IOLBF or _IONBF.\n- `size`: buffer size.",
+    "returns": "Zero on success, nonzero if the mode is invalid or the request cannot be honored.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    FILE* file = tmpfile();\n    if (!file)\n        return 1;\n    char buffer[1024];\n    int status = setvbuf(file, buffer, _IOFBF, sizeof(buffer));\n    fclose(file);\n    return status == 0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "ungetc",
+    "summary": "Push a character back onto an input stream so it is returned by the next read. At least one character of pushback is guaranteed. Pushing EOF fails; a successful call clears the end-of-file indicator.",
+    "signature": "int ungetc(int character, FILE* stream);",
+    "parameters": "- `character`: value converted to unsigned char; not EOF.\n- `stream`: readable stream.",
+    "returns": "The pushed character on success, or EOF on failure.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    FILE* file = tmpfile();\n    if (!file)\n        return 1;\n    fputs(\"AB\", file);\n    rewind(file);\n    fgetc(file);\n    int status = ungetc('A', file);\n    int character = fgetc(file);\n    fclose(file);\n    return status != EOF && character == 'A' ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "fgetpos",
+    "summary": "Save a stream position and its parsing state in an fpos_t object. The representation is opaque and may include multibyte conversion state; use fsetpos to restore it.",
+    "signature": "int fgetpos(FILE* stream, fpos_t* position);",
+    "parameters": "- `stream`: open stream.\n- `position`: output object receiving the position.",
+    "returns": "Zero on success, nonzero on failure.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    FILE* file = tmpfile();\n    if (!file)\n        return 1;\n    fputs(\"abc\", file);\n    rewind(file);\n    fpos_t position;\n    if (fgetpos(file, &position) != 0) {\n        fclose(file);\n        return 1;\n    }\n    fgetc(file);\n    int status = fsetpos(file, &position);\n    int character = fgetc(file);\n    fclose(file);\n    return status == 0 && character == 'a' ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "fsetpos",
+    "summary": "Restore a position previously saved by fgetpos on the same stream. Success clears the end-of-file indicator, discards pushback and restores any saved multibyte parsing state.",
+    "signature": "int fsetpos(FILE* stream, const fpos_t* position);",
+    "parameters": "- `stream`: stream that supplied the saved position.\n- `position`: object written by a successful fgetpos call.",
+    "returns": "Zero on success, nonzero on failure.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    FILE* file = tmpfile();\n    if (!file)\n        return 1;\n    fputs(\"abc\", file);\n    rewind(file);\n    fpos_t position;\n    if (fgetpos(file, &position) != 0) {\n        fclose(file);\n        return 1;\n    }\n    fgetc(file);\n    int status = fsetpos(file, &position);\n    int character = fgetc(file);\n    fclose(file);\n    return status == 0 && character == 'a' ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "fpos_t",
+    "summary": "An opaque type holding a stream position and any associated multibyte conversion state. It need not be an integer or a byte offset. Obtain it with fgetpos and restore it with fsetpos.",
+    "signature": "fpos_t position;",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    FILE* file = tmpfile();\n    if (!file)\n        return 1;\n    fputs(\"abc\", file);\n    rewind(file);\n    fpos_t position;\n    if (fgetpos(file, &position) != 0) {\n        fclose(file);\n        return 1;\n    }\n    fgetc(file);\n    int status = fsetpos(file, &position);\n    int character = fgetc(file);\n    fclose(file);\n    return status == 0 && character == 'a' ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "stdin",
+    "summary": "A macro yielding a FILE pointer for standard input. The standard streams are available at program startup. Prefer passing the stream explicitly when a function should work with arbitrary files.",
+    "signature": "FILE* stream = stdin;",
+    "parameters": "",
+    "returns": "An expression of type FILE*; it is not a file-descriptor integer.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    int character = fgetc(stdin);\n    return character == '4' ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "stdout",
+    "summary": "A macro yielding a FILE pointer for standard output. The standard streams are available at program startup. Prefer passing the stream explicitly when a function should work with arbitrary files.",
+    "signature": "FILE* stream = stdout;",
+    "parameters": "",
+    "returns": "An expression of type FILE*; it is not a file-descriptor integer.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    return fputs(\"hello\\n\", stdout) == EOF;\n}\n"
+  },
+  {
+    "symbol": "stderr",
+    "summary": "A macro yielding a FILE pointer for standard error. The standard streams are available at program startup. Prefer passing the stream explicitly when a function should work with arbitrary files.",
+    "signature": "FILE* stream = stderr;",
+    "parameters": "",
+    "returns": "An expression of type FILE*; it is not a file-descriptor integer.",
+    "members": "",
+    "example": "#include <stdio.h>\n\nint main(void) {\n    return fputs(\"example diagnostic\\n\", stderr) == EOF;\n}\n"
+  },
+  {
+    "symbol": "atoi",
+    "summary": "Convert an initial decimal integer after optional whitespace and sign. This convenience interface cannot distinguish a valid zero from a failed conversion, and an out-of-range result has undefined behavior. Use strtol or strtoll when validation matters.",
+    "signature": "int atoi(const char* text);",
+    "parameters": "- `text`: null-terminated decimal input.",
+    "returns": "The converted int, or zero if no conversion occurs. There is no end pointer or reliable range-error interface.",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint main(void) {\n    int value = atoi(\"42\");\n    return value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "atol",
+    "summary": "Convert an initial decimal integer after optional whitespace and sign. This convenience interface cannot distinguish a valid zero from a failed conversion, and an out-of-range result has undefined behavior. Use strtol or strtoll when validation matters.",
+    "signature": "long atol(const char* text);",
+    "parameters": "- `text`: null-terminated decimal input.",
+    "returns": "The converted long, or zero if no conversion occurs. There is no end pointer or reliable range-error interface.",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint main(void) {\n    long value = atol(\"42\");\n    return value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "atoll",
+    "summary": "Convert an initial decimal integer after optional whitespace and sign. This convenience interface cannot distinguish a valid zero from a failed conversion, and an out-of-range result has undefined behavior. Use strtol or strtoll when validation matters.",
+    "signature": "long long atoll(const char* text);",
+    "parameters": "- `text`: null-terminated decimal input.",
+    "returns": "The converted long long, or zero if no conversion occurs. There is no end pointer or reliable range-error interface.",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint main(void) {\n    long long value = atoll(\"42\");\n    return value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "strtoll",
+    "summary": "Parse an integer prefix after optional whitespace and sign, with an end pointer and range checking. Base zero recognizes the C11 decimal, octal and hexadecimal prefixes; explicit bases are 2 through 36.",
+    "signature": "long long strtoll(const char* text, char** end, int base);",
+    "parameters": "- `text`: null-terminated input.\n- `end`: optional output pointer to the first unconverted character.\n- `base`: 0 or 2 through 36.",
+    "returns": "The converted value, or zero if no conversion occurs. Overflow or underflow outside the result type sets errno to ERANGE and returns the appropriate type limit. Reset errno first; use end == text to detect no conversion.",
+    "members": "",
+    "example": "#include <stdlib.h>\n#include <errno.h>\n\nint main(void) {\n    const char text[] = \"42\";\n    char* end = NULL;\n    errno = 0;\n    long long value = strtoll(text, &end, 10);\n    if (errno == ERANGE || end == text || *end != '\\0')\n        return 1;\n    return value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "strtoul",
+    "summary": "Parse an integer prefix after optional whitespace and sign, with an end pointer and range checking. Base zero recognizes the C11 decimal, octal and hexadecimal prefixes; explicit bases are 2 through 36. A leading minus sign is accepted and negates the result in the unsigned result type; reject it separately when negative input is forbidden.",
+    "signature": "unsigned long strtoul(const char* text, char** end, int base);",
+    "parameters": "- `text`: null-terminated input.\n- `end`: optional output pointer to the first unconverted character.\n- `base`: 0 or 2 through 36.",
+    "returns": "The converted value, or zero if no conversion occurs. Overflow or underflow outside the result type sets errno to ERANGE and returns the appropriate type limit. Reset errno first; use end == text to detect no conversion.",
+    "members": "",
+    "example": "#include <stdlib.h>\n#include <errno.h>\n\nint main(void) {\n    const char text[] = \"42\";\n    char* end = NULL;\n    errno = 0;\n    unsigned long value = strtoul(text, &end, 10);\n    if (errno == ERANGE || end == text || *end != '\\0')\n        return 1;\n    return value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "strtoull",
+    "summary": "Parse an integer prefix after optional whitespace and sign, with an end pointer and range checking. Base zero recognizes the C11 decimal, octal and hexadecimal prefixes; explicit bases are 2 through 36. A leading minus sign is accepted and negates the result in the unsigned result type; reject it separately when negative input is forbidden.",
+    "signature": "unsigned long long strtoull(const char* text, char** end, int base);",
+    "parameters": "- `text`: null-terminated input.\n- `end`: optional output pointer to the first unconverted character.\n- `base`: 0 or 2 through 36.",
+    "returns": "The converted value, or zero if no conversion occurs. Overflow or underflow outside the result type sets errno to ERANGE and returns the appropriate type limit. Reset errno first; use end == text to detect no conversion.",
+    "members": "",
+    "example": "#include <stdlib.h>\n#include <errno.h>\n\nint main(void) {\n    const char text[] = \"42\";\n    char* end = NULL;\n    errno = 0;\n    unsigned long long value = strtoull(text, &end, 10);\n    if (errno == ERANGE || end == text || *end != '\\0')\n        return 1;\n    return value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "abs",
+    "summary": "Compute the absolute value of a signed integer. The result must be representable: applying this function to the minimum value of its signed type has undefined behavior.",
+    "signature": "int abs(int value);",
+    "parameters": "- `value`: signed integer whose magnitude is representable.",
+    "returns": "The nonnegative magnitude, with the same integer type.",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint main(void) {\n    int value = -42;\n    return abs(value) == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "labs",
+    "summary": "Compute the absolute value of a signed integer. The result must be representable: applying this function to the minimum value of its signed type has undefined behavior.",
+    "signature": "long labs(long value);",
+    "parameters": "- `value`: signed integer whose magnitude is representable.",
+    "returns": "The nonnegative magnitude, with the same integer type.",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint main(void) {\n    long value = -42;\n    return labs(value) == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "div",
+    "summary": "Compute an integer quotient and remainder together. Division truncates toward zero; numerator == quotient * denominator + remainder. A zero denominator or an unrepresentable quotient has undefined behavior.",
+    "signature": "div_t div(int numerator, int denominator);",
+    "parameters": "- `numerator`: dividend.\n- `denominator`: nonzero divisor; the quotient must fit the result type.",
+    "returns": "A structure with quot for the quotient and rem for the remainder. A nonzero remainder has the sign of the numerator.",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint main(void) {\n    div_t result = div(17, 5);\n    return result.quot == 3 && result.rem == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "ldiv",
+    "summary": "Compute an integer quotient and remainder together. Division truncates toward zero; numerator == quotient * denominator + remainder. A zero denominator or an unrepresentable quotient has undefined behavior.",
+    "signature": "ldiv_t ldiv(long numerator, long denominator);",
+    "parameters": "- `numerator`: dividend.\n- `denominator`: nonzero divisor; the quotient must fit the result type.",
+    "returns": "A structure with quot for the quotient and rem for the remainder. A nonzero remainder has the sign of the numerator.",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint main(void) {\n    ldiv_t result = ldiv(17, 5);\n    return result.quot == 3 && result.rem == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "bsearch",
+    "summary": "Find an element in an array sorted according to the same comparison relation. The callback compares the key with an array element. If several elements match, which one is returned is unspecified. ISO C does not prescribe a complexity bound.",
+    "signature": "void* bsearch(const void* key, const void* base, size_t count, size_t size,\n              int (*compare)(const void*, const void*));",
+    "parameters": "- `key`: object to look up.\n- `base`, `count`, `size`: sorted array, element count and element size.\n- `compare`: negative, zero or positive for the ordering of key and element.",
+    "returns": "A pointer to a matching element, or a null pointer. Constness is not preserved by the C interface; C++ also provides const-preserving overloads.",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint compareKey(const void* key, const void* element) {\n    int a = *(const int*) key;\n    int b = *(const int*) element;\n    return (a > b) - (a < b);\n}\n\nint main(void) {\n    int values[] = {10, 20, 30};\n    int key = 20;\n    int* found = (int*) bsearch(&key, values, 3, sizeof(values[0]), compareKey);\n    return found && *found == 20 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "rand",
+    "summary": "Return the next value from the implementation-defined pseudo-random sequence. This interface uses implicit generator state and is not suitable for security-sensitive randomness. Modulo reduction can introduce bias.",
+    "signature": "int rand(void);",
+    "parameters": "No parameters. Use srand to choose a seed.",
+    "returns": "An integer between 0 and RAND_MAX, inclusive. Sequence quality and thread-safety guarantees are implementation-dependent.",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint main(void) {\n    int value = rand();\n    return value >= 0 && value <= RAND_MAX ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "srand",
+    "summary": "Seed the pseudo-random sequence used by rand. The same seed reproduces the same sequence within one implementation. Seeding once is normally enough; reseeding before every draw can repeat values.",
+    "signature": "void srand(unsigned int seed);",
+    "parameters": "- `seed`: starting seed for the implementation-defined generator.",
+    "returns": "No return value. Calling rand without seeding behaves as if srand(1) had been called.",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint main(void) {\n    srand(42);\n    int first = rand();\n    srand(42);\n    return first == rand() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "getenv",
+    "summary": "Look up an environment variable. The returned string belongs to the implementation and must not be modified or freed. Later environment operations can invalidate or change it.",
+    "signature": "char* getenv(const char* name);",
+    "parameters": "- `name`: null-terminated environment-variable name.",
+    "returns": "A pointer to the value, or a null pointer if no matching variable is found. An empty value differs from a missing variable.",
+    "members": "",
+    "example": "#include <stdlib.h>\n#include <stdio.h>\n\nint main(void) {\n    const char* value = getenv(\"PATH\");\n    if (value)\n        puts(\"PATH is set\");\n    return 0;\n}\n"
+  },
+  {
+    "symbol": "exit",
+    "summary": "Terminate the program normally, call registered atexit handlers, flush and close C streams and remove temporary files. It does not unwind automatic C++ objects in the current call stack.",
+    "signature": "void exit(int status);",
+    "parameters": "- `status`: EXIT_SUCCESS or zero for success, EXIT_FAILURE for failure; other values have implementation-defined meaning to the host.",
+    "returns": "Does not return.",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint main(void) {\n    exit(EXIT_SUCCESS);\n}\n"
+  },
+  {
+    "symbol": "abort",
+    "summary": "Terminate the program abnormally by raising SIGABRT. Normal exit handlers and C++ stack unwinding do not run. Whether output streams are flushed or closed is implementation-defined.",
+    "signature": "void abort(void);",
+    "parameters": "No parameters.",
+    "returns": "Does not return. Use only when normal error recovery is impossible.",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint main(void) {\n    int valid = 1;\n    if (!valid)\n        abort();\n    return 0;\n}\n"
+  },
+  {
+    "symbol": "EXIT_SUCCESS",
+    "summary": "A macro expanding to an integer constant expression representing successful program termination. Zero also represents success; the numeric value of EXIT_SUCCESS itself is implementation-defined.",
+    "signature": "EXIT_SUCCESS",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint main(void) {\n    return EXIT_SUCCESS;\n}\n"
+  },
+  {
+    "symbol": "EXIT_FAILURE",
+    "summary": "A macro expanding to an integer constant expression representing unsuccessful program termination. Do not assume its numeric value is one.",
+    "signature": "EXIT_FAILURE",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint main(void) {\n    int valid = 1;\n    if (!valid)\n        return EXIT_FAILURE;\n    return EXIT_SUCCESS;\n}\n"
+  },
+  {
+    "symbol": "RAND_MAX",
+    "summary": "The largest value rand can return. ISO C guarantees RAND_MAX is at least 32767; the actual value is implementation-defined.",
+    "signature": "RAND_MAX",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <stdlib.h>\n\nint main(void) {\n    return RAND_MAX >= 32767 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "strcat",
+    "summary": "Append a null-terminated string, including its terminator, to another string. The destination must already be terminated and have room for both strings and one terminator. The memory regions must not overlap.",
+    "signature": "char* strcat(char* destination, const char* source);",
+    "parameters": "- `destination`: terminated writable buffer with sufficient unused capacity.\n- `source`: terminated string to append.",
+    "returns": "destination.",
+    "members": "",
+    "example": "#include <string.h>\n\nint main(void) {\n    char text[16] = \"hello\";\n    strcat(text, \" world\");\n    return strcmp(text, \"hello world\") == 0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "strncat",
+    "summary": "Append at most count source characters and always add a terminating null character. count limits source characters, not the total destination capacity. The destination needs strlen(destination) + min(count, source length) + 1 bytes, and the regions must not overlap.",
+    "signature": "char* strncat(char* destination, const char* source, size_t count);",
+    "parameters": "- `destination`: terminated writable string.\n- `source`: readable through count characters or an earlier terminator.\n- `count`: maximum source characters to append.",
+    "returns": "destination.",
+    "members": "",
+    "example": "#include <string.h>\n\nint main(void) {\n    char text[16] = \"hello\";\n    strncat(text, \" world!\", 6);\n    return strcmp(text, \"hello world\") == 0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "strrchr",
+    "summary": "Find the last occurrence of a character in a null-terminated string, including the terminating null character in the search. C++ provides overloads that preserve constness.",
+    "signature": "char* strrchr(const char* text, int character);",
+    "parameters": "- `text`: terminated string.\n- `character`: value converted to char.",
+    "returns": "A pointer to the last occurrence, or null. The signature is the C declaration; do not modify a string literal through its result.",
+    "members": "",
+    "example": "#include <string.h>\n\nint main(void) {\n    const char text[] = \"hello\";\n    const char* found = strrchr(text, 'l');\n    return found == text + 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "strcspn",
+    "summary": "Count the initial characters of a string that contain none of the characters in a reject set. Both arguments must be null-terminated strings.",
+    "signature": "size_t strcspn(const char* text, const char* reject);",
+    "parameters": "- `text`: string to inspect.\n- `reject`: characters that stop the scan.",
+    "returns": "The length of the initial non-rejected prefix, possibly the full string length.",
+    "members": "",
+    "example": "#include <string.h>\n\nint main(void) {\n    return strcspn(\"name:value\", \":\") == 4 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "strspn",
+    "summary": "Count the initial characters of a string that all belong to an accept set. Scanning stops at the first other character or at the terminator.",
+    "signature": "size_t strspn(const char* text, const char* accept);",
+    "parameters": "- `text`: terminated string to inspect.\n- `accept`: terminated string listing allowed characters.",
+    "returns": "The length of the initial accepted prefix.",
+    "members": "",
+    "example": "#include <string.h>\n\nint main(void) {\n    return strspn(\"123abc\", \"0123456789\") == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "strpbrk",
+    "summary": "Find the first character of a string that belongs to a supplied character set. The null terminator is not considered a match. C++ overloads preserve the input constness.",
+    "signature": "char* strpbrk(const char* text, const char* accept);",
+    "parameters": "- `text`: terminated string to search.\n- `accept`: terminated set of candidate characters.",
+    "returns": "A pointer to the first match, or null. The signature is the C declaration.",
+    "members": "",
+    "example": "#include <string.h>\n\nint main(void) {\n    const char text[] = \"hello\";\n    const char* found = strpbrk(text, \"aeiou\");\n    return found == text + 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "strtok",
+    "summary": "Split a writable string into nonempty tokens by replacing delimiters with null characters. Pass the string on the first call and null on subsequent calls. Adjacent delimiters are skipped. The hidden parsing state makes nested or concurrent use unsafe without additional coordination.",
+    "signature": "char* strtok(char* text, const char* delimiters);",
+    "parameters": "- `text`: modifiable terminated string initially, then null to continue.\n- `delimiters`: terminated set of separator characters, which may vary between calls.",
+    "returns": "A pointer to the next token in the original buffer, or null when no tokens remain.",
+    "members": "",
+    "example": "#include <string.h>\n\nint main(void) {\n    char text[] = \"one,two\";\n    char* first = strtok(text, \",\");\n    char* second = strtok(NULL, \",\");\n    return first && second && strcmp(first, \"one\") == 0 && strcmp(second, \"two\") == 0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "memchr",
+    "summary": "Search exactly count bytes for value converted to unsigned char. Null bytes do not stop the search. C++ overloads preserve constness.",
+    "signature": "void* memchr(const void* memory, int value, size_t count);",
+    "parameters": "- `memory`: readable region of at least count bytes.\n- `value`: byte value to find.\n- `count`: number of bytes to inspect.",
+    "returns": "A pointer to the first matching byte, or null. The signature is the C declaration.",
+    "members": "",
+    "example": "#include <string.h>\n\nint main(void) {\n    char bytes[] = \"abc\";\n    char* found = (char*) memchr(bytes, 'b', sizeof(bytes));\n    return found == bytes + 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "strerror",
+    "summary": "Return implementation-provided text describing an error number. The message may depend on the current locale and may be overwritten by a later call. Do not modify or free the returned string.",
+    "signature": "char* strerror(int errorNumber);",
+    "parameters": "- `errorNumber`: an errno-style error code; unknown codes produce an implementation-provided message.",
+    "returns": "A pointer to a null-terminated diagnostic string. The text and thread-safety behavior are implementation-dependent.",
+    "members": "",
+    "example": "#include <string.h>\n#include <errno.h>\n\nint main(void) {\n    const char* message = strerror(EDOM);\n    return message ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "isalpha",
+    "summary": "Test whether a value is an alphabetic character in the current C locale. The argument must be EOF or representable as unsigned char; cast a possibly negative plain char to unsigned char before passing it.",
+    "signature": "int isalpha(int character);",
+    "parameters": "- `character`: EOF or an unsigned char value promoted to int.",
+    "returns": "A nonzero value when the classification matches, otherwise zero. Do not assume a true result equals one.",
+    "members": "",
+    "example": "#include <ctype.h>\n\nint main(void) {\n    char character = 'A';\n    return isalpha((unsigned char) character) != 0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "isdigit",
+    "summary": "Test whether a value is one of the decimal digits 0 through 9. The argument must be EOF or representable as unsigned char; cast a possibly negative plain char to unsigned char before passing it.",
+    "signature": "int isdigit(int character);",
+    "parameters": "- `character`: EOF or an unsigned char value promoted to int.",
+    "returns": "A nonzero value when the classification matches, otherwise zero. Do not assume a true result equals one.",
+    "members": "",
+    "example": "#include <ctype.h>\n\nint main(void) {\n    char character = '7';\n    return isdigit((unsigned char) character) != 0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "isspace",
+    "summary": "Test whether a value is a whitespace character in the current C locale. The argument must be EOF or representable as unsigned char; cast a possibly negative plain char to unsigned char before passing it.",
+    "signature": "int isspace(int character);",
+    "parameters": "- `character`: EOF or an unsigned char value promoted to int.",
+    "returns": "A nonzero value when the classification matches, otherwise zero. Do not assume a true result equals one.",
+    "members": "",
+    "example": "#include <ctype.h>\n\nint main(void) {\n    char character = ' ';\n    return isspace((unsigned char) character) != 0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "tolower",
+    "summary": "Convert a character using the current C locale. The argument must be EOF or representable as unsigned char; cast a possibly negative plain char to unsigned char before passing it.",
+    "signature": "int tolower(int character);",
+    "parameters": "- `character`: EOF or an unsigned char value promoted to int.",
+    "returns": "The converted character, or the original value if no conversion applies.",
+    "members": "",
+    "example": "#include <ctype.h>\n\nint main(void) {\n    char character = 'A';\n    return tolower((unsigned char) character) == 'a' ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "toupper",
+    "summary": "Convert a character using the current C locale. The argument must be EOF or representable as unsigned char; cast a possibly negative plain char to unsigned char before passing it.",
+    "signature": "int toupper(int character);",
+    "parameters": "- `character`: EOF or an unsigned char value promoted to int.",
+    "returns": "The converted character, or the original value if no conversion applies.",
+    "members": "",
+    "example": "#include <ctype.h>\n\nint main(void) {\n    char character = 'a';\n    return toupper((unsigned char) character) == 'A' ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "sqrt",
+    "summary": "Compute the nonnegative square root. A negative argument is a domain error.",
+    "signature": "double sqrt(double value);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = sqrt(9.0);\n    return fabs(value - (3.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "pow",
+    "summary": "Raise base to exponent. A negative base with a non-integral exponent is a domain error; zero with a negative exponent can produce a pole error. Range errors can occur.",
+    "signature": "double pow(double base, double exponent);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = pow(2.0, 3.0);\n    return fabs(value - (8.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "fabs",
+    "summary": "Compute the absolute value of a floating-point number. Unlike integer abs, this handles the floating-point range without signed-integer overflow.",
+    "signature": "double fabs(double value);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = fabs(-3.5);\n    return fabs(value - (3.5)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "floor",
+    "summary": "Round toward negative infinity. For example, floor(-1.5) is -2, not -1. The result remains a floating-point value.",
+    "signature": "double floor(double value);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = floor(-1.5);\n    return fabs(value - (-2.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "ceil",
+    "summary": "Round toward positive infinity. For example, ceil(-1.5) is -1. The result remains a floating-point value.",
+    "signature": "double ceil(double value);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = ceil(-1.5);\n    return fabs(value - (-1.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "round",
+    "summary": "Round to the nearest integer value, with halfway cases away from zero, independently of the current rounding mode. The result remains a floating-point value.",
+    "signature": "double round(double value);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = round(-1.5);\n    return fabs(value - (-2.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "sin",
+    "summary": "Compute the sine of an angle expressed in radians, not degrees.",
+    "signature": "double sin(double radians);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = sin(0.0);\n    return fabs(value - (0.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "cos",
+    "summary": "Compute the cosine of an angle expressed in radians, not degrees.",
+    "signature": "double cos(double radians);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = cos(0.0);\n    return fabs(value - (1.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "tan",
+    "summary": "Compute the tangent of an angle in radians. Values near a pole can have a very large magnitude and substantial relative error.",
+    "signature": "double tan(double radians);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = tan(0.0);\n    return fabs(value - (0.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "asin",
+    "summary": "Compute the principal inverse sine in radians. The argument must be in [-1, 1]; other finite values cause a domain error. The principal result lies in [-pi/2, pi/2].",
+    "signature": "double asin(double value);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = asin(0.0);\n    return fabs(value - (0.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "acos",
+    "summary": "Compute the principal inverse cosine in radians. The argument must be in [-1, 1]; other finite values cause a domain error. The principal result lies in [0, pi].",
+    "signature": "double acos(double value);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = acos(1.0);\n    return fabs(value - (0.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "atan",
+    "summary": "Compute the principal inverse tangent in radians, with a result in [-pi/2, pi/2]. Use atan2 when both vector coordinates and quadrant information are available.",
+    "signature": "double atan(double value);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = atan(0.0);\n    return fabs(value - (0.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "atan2",
+    "summary": "Compute the polar angle of the vector (x, y) in radians, using both signs to select a quadrant. The y coordinate is the first argument. ISO C permits a domain error when both arguments are zero.",
+    "signature": "double atan2(double y, double x);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = atan2(0.0, 1.0);\n    return fabs(value - (0.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "exp",
+    "summary": "Compute e raised to a floating-point power. Large positive arguments can overflow and large negative arguments can underflow.",
+    "signature": "double exp(double value);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = exp(0.0);\n    return fabs(value - (1.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "log",
+    "summary": "Compute the natural logarithm. Negative arguments cause a domain error; zero is a pole error.",
+    "signature": "double log(double value);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = log(1.0);\n    return fabs(value - (0.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "log10",
+    "summary": "Compute the base-10 logarithm. Negative arguments cause a domain error; zero is a pole error.",
+    "signature": "double log10(double value);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = log10(100.0);\n    return fabs(value - (2.0)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "fmod",
+    "summary": "Compute the remainder of x/y with the quotient truncated toward zero. A nonzero result has the sign of x. A zero divisor causes a domain error.",
+    "signature": "double fmod(double x, double y);",
+    "parameters": "- Arguments are floating-point values; trigonometric angles are in radians.\n- Float and long-double variants use the f and l suffixes.",
+    "returns": "The computed double result. On exceptional input, error reporting follows math_errhandling through errno, floating-point exceptions, or both; do not use a single numeric sentinel as a universal error test.",
+    "members": "",
+    "example": "#include <math.h>\n\nint main(void) {\n    double value = fmod(5.5, 2.0);\n    return fabs(value - (1.5)) < 1e-12 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "time",
+    "summary": "Obtain the current calendar time in the implementation-defined time_t representation. Do not assume time_t counts Unix seconds on every ISO C implementation.",
+    "signature": "time_t time(time_t* destination);",
+    "parameters": "- `destination`: optional output pointer, or null to request only the return value.",
+    "returns": "The calendar time, also stored through a non-null destination, or (time_t)-1 if unavailable.",
+    "members": "",
+    "example": "#include <time.h>\n\nint main(void) {\n    time_t now = time(NULL);\n    return now == (time_t) -1 ? 1 : 0;\n}\n"
+  },
+  {
+    "symbol": "difftime",
+    "summary": "Compute elapsed calendar seconds between two time_t values. Use this instead of subtracting time_t values directly, because the representation need not be arithmetic seconds.",
+    "signature": "double difftime(time_t end, time_t beginning);",
+    "parameters": "- `end`, `beginning`: calendar times to compare.",
+    "returns": "The difference end minus beginning in seconds as a double.",
+    "members": "",
+    "example": "#include <time.h>\n\nint main(void) {\n    time_t now = time(NULL);\n    if (now == (time_t) -1)\n        return 1;\n    return difftime(now, now) == 0.0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "clock",
+    "summary": "ISO C measures processor time used by the program. Microsoft CRT instead reports elapsed wall-clock time since startup. Convert differences to seconds with CLOCKS_PER_SEC, and account for possible range limits or wraparound.",
+    "signature": "clock_t clock(void);",
+    "parameters": "No parameters.",
+    "returns": "An approximation of processor time, or (clock_t)-1 if unavailable or not representable.",
+    "members": "",
+    "example": "#include <time.h>\n\nint main(void) {\n    clock_t ticks = clock();\n    return ticks == (clock_t) -1 ? 1 : 0;\n}\n"
+  },
+  {
+    "symbol": "localtime",
+    "summary": "Convert a calendar time into local calendar components using the implementation time-zone rules. The returned static storage may be overwritten by later time-conversion calls and need not be thread-safe.",
+    "signature": "struct tm* localtime(const time_t* timer);",
+    "parameters": "- `timer`: pointer to a valid calendar time.",
+    "returns": "A pointer to a shared struct tm, or null if conversion fails. Copy the structure before another conversion if it must be retained.",
+    "members": "",
+    "example": "#include <time.h>\n\nint main(void) {\n    time_t now = time(NULL);\n    if (now == (time_t) -1)\n        return 1;\n    struct tm* date = localtime(&now);\n    return date && date->tm_mon >= 0 && date->tm_mon <= 11 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "gmtime",
+    "summary": "Convert a calendar time into UTC calendar components. The returned static storage may be shared with localtime and overwritten by later conversion calls; it need not be thread-safe.",
+    "signature": "struct tm* gmtime(const time_t* timer);",
+    "parameters": "- `timer`: pointer to the calendar time.",
+    "returns": "A pointer to a shared struct tm in UTC, or null if conversion fails.",
+    "members": "",
+    "example": "#include <time.h>\n\nint main(void) {\n    time_t now = time(NULL);\n    if (now == (time_t) -1)\n        return 1;\n    struct tm* date = gmtime(&now);\n    return date && date->tm_mon >= 0 && date->tm_mon <= 11 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "mktime",
+    "summary": "Interpret calendar components as local time, normalize out-of-range fields and compute the corresponding calendar time. Input tm_wday and tm_yday are ignored and recomputed. Set tm_isdst to -1 when daylight-saving status is unknown.",
+    "signature": "time_t mktime(struct tm* date);",
+    "parameters": "- `date`: modifiable local calendar components; normalized on success.",
+    "returns": "The calendar time, or (time_t)-1 if it cannot be represented.",
+    "members": "",
+    "example": "#include <time.h>\n\nint main(void) {\n    struct tm date = {0};\n    date.tm_year = 2025 - 1900;\n    date.tm_mon = 0;\n    date.tm_mday = 15;\n    date.tm_isdst = -1;\n    return mktime(&date) == (time_t) -1 ? 1 : 0;\n}\n"
+  },
+  {
+    "symbol": "strftime",
+    "summary": "Format calendar components into a bounded character buffer using a format string and the current locale. The capacity includes space for the null terminator.",
+    "signature": "size_t strftime(char* buffer, size_t capacity, const char* format, const struct tm* date);",
+    "parameters": "- `buffer`, `capacity`: destination storage including terminator space.\n- `format`: conversion format such as %Y-%m-%d.\n- `date`: calendar components.",
+    "returns": "The characters stored excluding the terminator, or zero if the result does not fit. A zero result can also describe an empty formatted result; do not rely on buffer contents after insufficient space.",
+    "members": "",
+    "example": "#include <time.h>\n\nint main(void) {\n    struct tm date = {0};\n    date.tm_year = 2025 - 1900;\n    date.tm_mon = 0;\n    date.tm_mday = 15;\n    char buffer[32];\n    return strftime(buffer, sizeof(buffer), \"%Y-%m-%d\", &date) == 10 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "time_t",
+    "summary": "An arithmetic type representing calendar time. Its encoding and range are implementation-defined; use time and mktime to produce values and difftime to compare elapsed seconds portably.",
+    "signature": "time_t now;",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <time.h>\n\nint main(void) {\n    time_t now = time(NULL);\n    return now == (time_t) -1 ? 1 : 0;\n}\n"
+  },
+  {
+    "symbol": "clock_t",
+    "summary": "A real arithmetic type representing the time reported by clock (CPU time in ISO C; elapsed time in Microsoft CRT). Convert tick differences using CLOCKS_PER_SEC. The range may be limited, and (clock_t)-1 indicates an unavailable clock result.",
+    "signature": "clock_t ticks;",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <time.h>\n\nint main(void) {\n    clock_t ticks = clock();\n    return ticks == (clock_t) -1 ? 1 : 0;\n}\n"
+  },
+  {
+    "symbol": "CLOCKS_PER_SEC",
+    "summary": "A macro giving the number of clock ticks per second for converting clock results. It need not match the actual measurement resolution and is not a wall-clock frequency.",
+    "signature": "CLOCKS_PER_SEC",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <time.h>\n\nint main(void) {\n    clock_t start = clock();\n    clock_t end = clock();\n    if (start == (clock_t) -1 || end == (clock_t) -1)\n        return 1;\n    double seconds = (double) (end - start) / CLOCKS_PER_SEC;\n    return seconds >= 0.0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "errno",
+    "summary": "A macro yielding a modifiable int lvalue used by library error-reporting interfaces. In C11 it is specific to the current thread. Successful calls need not reset an old error, so reset it before a call whose contract uses errno and check that contract afterward.",
+    "signature": "errno",
+    "parameters": "",
+    "returns": "An error indicator, not a universal status for every library call.",
+    "members": "",
+    "example": "#include <errno.h>\n#include <stdlib.h>\n\nint main(void) {\n    errno = 0;\n    char* end = NULL;\n    strtol(\"999999999999999999999999999999\", &end, 10);\n    return errno == ERANGE ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "ERANGE",
+    "summary": "A positive integer error-code macro indicating that a result is outside the representable range. Its numeric value is implementation-defined. Functions such as strtol report overflow with errno set to ERANGE.",
+    "signature": "ERANGE",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <errno.h>\n#include <stdlib.h>\n\nint main(void) {\n    errno = 0;\n    char* end = NULL;\n    strtol(\"999999999999999999999999999999\", &end, 10);\n    return errno == ERANGE ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "NULL",
+    "summary": "An implementation-defined null pointer constant. In C it may be an integer constant or a void-pointer expression; C++ uses a suitable null pointer constant. Prefer nullptr in new C++ code to avoid overload ambiguity.",
+    "signature": "NULL",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <stddef.h>\n\nint main(void) {\n    int* pointer = NULL;\n    return pointer == NULL ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "offsetof",
+    "summary": "Compute the byte offset of a member within a structure as a size_t constant expression. The member must not be a bit-field. In C++ the portable guarantee applies to standard-layout types; a non-standard-layout type is conditionally supported in C++17.",
+    "signature": "offsetof(type, member)",
+    "parameters": "- `type`: complete structure or supported C++ class type.\n- `member`: member designator, not a bit-field.",
+    "returns": "The offset in bytes as size_t. Padding can make it larger than the sum of preceding member sizes.",
+    "members": "",
+    "example": "#include <stddef.h>\n\nstruct Point {\n    int x;\n    double y;\n};\n\nint main(void) {\n    size_t offset = offsetof(struct Point, y);\n    return offset >= sizeof(int) ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "SIZE_MAX",
+    "summary": "The largest value representable by size_t. Use division-based checks before multiplying allocation sizes, because unsigned overflow wraps instead of producing a negative value.",
+    "signature": "SIZE_MAX",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <stdint.h>\n\nint main(void) {\n    return SIZE_MAX >= 65535 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "INT_MAX",
+    "summary": "The largest value representable by int. Its value depends on the implementation; signed arithmetic beyond the representable range has undefined behavior.",
+    "signature": "INT_MAX",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <limits.h>\n\nint main(void) {\n    return INT_MAX >= 32767 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "INT_MIN",
+    "summary": "The smallest value representable by int. Do not negate it or pass it to integer abs unless the positive result is representable; common two's-complement implementations cannot represent that magnitude as int.",
+    "signature": "INT_MIN",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <limits.h>\n\nint main(void) {\n    return INT_MIN <= -32767 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::at",
+    "summary": "Access a stored character with bounds checking. An index equal to or greater than size() throws std::out_of_range; unlike operator[], this does not expose the trailing terminator.",
+    "signature": "reference at(size_type index);\nconst_reference at(size_type index) const;",
+    "parameters": "- `index`: zero-based index below size().",
+    "returns": "A reference to the character. Constant time.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"hello\";\n    text.at(0) = 'H';\n    return text == \"Hello\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::clear",
+    "summary": "Remove every stored character and make the string empty. A terminating null character remains available through c_str() and data(). Do not retain old iterators or pointers across modifying operations without checking their invalidation rules.",
+    "signature": "void clear() noexcept;",
+    "parameters": "No parameters.",
+    "returns": "No return value.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"hello\";\n    text.clear();\n    return text.empty() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::insert",
+    "summary": "Insert characters before an index and move the following characters. An index greater than size() throws std::out_of_range. This signature shows insertion of a null-terminated sequence; other overloads accept strings, ranges or repeated characters.",
+    "signature": "basic_string& insert(size_type index, const CharT* text);",
+    "parameters": "- `index`: insertion point, including size().\n- `text`: terminated sequence to insert.",
+    "returns": "A reference to this string for the index-based overload.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"hello world\";\n    text.insert(6, \"small \");\n    return text == \"hello small world\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::replace",
+    "summary": "Replace a substring with new characters. position must not exceed size(); count is truncated to the remaining length. This signature shows the string overload. Modifying storage can invalidate element pointers, references and iterators.",
+    "signature": "basic_string& replace(size_type position, size_type count, const basic_string& text);",
+    "parameters": "- `position`, `count`: substring to replace.\n- `text`: replacement characters.",
+    "returns": "A reference to this string; its length can change.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"hello world\";\n    text.replace(6, 5, std::string(\"C++\"));\n    return text == \"hello C++\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::compare",
+    "summary": "Compare character sequences lexicographically using the character traits. This is case-sensitive with the default traits and is not locale collation. Substring and pointer overloads are also available.",
+    "signature": "int compare(const basic_string& text) const noexcept;",
+    "parameters": "- `text`: string to compare with this string.",
+    "returns": "A negative value, zero or a positive value for less, equal or greater. The magnitude is unspecified.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"apple\";\n    return text.compare(std::string(\"banana\")) < 0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::rfind",
+    "summary": "Search backward for the last occurrence starting at or before a position. The default position considers the entire string. Matching is case-sensitive with the default traits.",
+    "signature": "size_type rfind(const basic_string& text, size_type position = npos) const noexcept;\nsize_type rfind(const CharT* text, size_type position = npos) const;",
+    "parameters": "- `text`: substring to locate.\n- `position`: greatest candidate starting index.",
+    "returns": "The matching starting index, or npos.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"one two one\";\n    return text.rfind(\"one\") == 8 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::find_first_of",
+    "summary": "Find the first stored character belonging to a set, starting at a given position. The set is interpreted as individual characters, not as a substring.",
+    "signature": "size_type find_first_of(const CharT* characters, size_type position = 0) const;",
+    "parameters": "- `characters`: terminated set of matching characters.\n- `position`: first index to inspect.",
+    "returns": "The first matching index, or npos.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"hello\";\n    return text.find_first_of(\"aeiou\") == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::find_last_of",
+    "summary": "Find the last stored character belonging to a set, searching backward from a position. The default position searches the whole string.",
+    "signature": "size_type find_last_of(const CharT* characters, size_type position = npos) const;",
+    "parameters": "- `characters`: terminated set of matching characters.\n- `position`: greatest index to inspect.",
+    "returns": "The last matching index, or npos.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"hello\";\n    return text.find_last_of(\"aeiou\") == 4 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::find_first_not_of",
+    "summary": "Find the first character outside a supplied set, starting at a position. This is useful for locating the first non-padding character.",
+    "signature": "size_type find_first_not_of(const CharT* characters, size_type position = 0) const;",
+    "parameters": "- `characters`: terminated set of characters to skip.\n- `position`: first index to inspect.",
+    "returns": "The first index outside the set, or npos.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"  hello\";\n    return text.find_first_not_of(\" \") == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::find_last_not_of",
+    "summary": "Find the last character outside a supplied set, searching backward. Check for npos before using the result to trim an all-padding string.",
+    "signature": "size_type find_last_not_of(const CharT* characters, size_type position = npos) const;",
+    "parameters": "- `characters`: terminated set of characters to skip.\n- `position`: greatest index to inspect.",
+    "returns": "The last index outside the set, or npos.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"hello  \";\n    return text.find_last_not_of(\" \") == 4 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::resize",
+    "summary": "Change the stored character count. Shrinking drops the suffix; growing appends the supplied character, or CharT() in the one-argument overload. Added null characters count toward size().",
+    "signature": "void resize(size_type count);\nvoid resize(size_type count, CharT character);",
+    "parameters": "- `count`: desired length.\n- `character`: value for newly added characters.",
+    "returns": "No return value. Growth can allocate and throw; modifying storage can invalidate references and pointers.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"ab\";\n    text.resize(5, 'x');\n    return text == \"abxxx\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::reserve",
+    "summary": "Request character storage without changing size(). In C++17 a smaller request can be treated as a non-binding shrink request; later standards change the overload set and shrinking rules. Allocation can invalidate pointers, references and iterators.",
+    "signature": "void reserve(size_type newCapacity = 0);",
+    "parameters": "- `newCapacity`: desired character capacity. This signature describes C++17.",
+    "returns": "No return value. A growing request ensures capacity() is at least newCapacity or throws.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"hello\";\n    text.reserve(32);\n    return text.size() == 5 && text.capacity() >= 32 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::capacity",
+    "summary": "Return how many characters fit in the current allocation without requiring a new allocation. The trailing null character is not counted as capacity.",
+    "signature": "size_type capacity() const noexcept;",
+    "parameters": "No parameters.",
+    "returns": "The current character-storage capacity, at least size().",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"hello\";\n    return text.capacity() >= text.size() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::push_back",
+    "summary": "Append one character to the end of a string. The stored length increases by one, even if the appended character is null. Reallocation can invalidate existing pointers and iterators.",
+    "signature": "void push_back(CharT character);",
+    "parameters": "- `character`: character to append.",
+    "returns": "No return value. Amortized constant time.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"hell\";\n    text.push_back('o');\n    return text == \"hello\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::pop_back",
+    "summary": "Remove the last stored character. The string must be nonempty; no character is returned.",
+    "signature": "void pop_back();",
+    "parameters": "No parameters.",
+    "returns": "No return value. Read back() before removal when the removed character is needed.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"hello!\";\n    text.pop_back();\n    return text == \"hello\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::front",
+    "summary": "Access the first stored character. The string must be nonempty; this is not an access to the terminator of an empty string.",
+    "signature": "reference front();\nconst_reference front() const;",
+    "parameters": "No parameters.",
+    "returns": "A reference to the first character. Constant time.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"hello\";\n    return text.front() == 'h' ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_string::back",
+    "summary": "Access the last stored character, excluding the trailing terminator. The string must be nonempty.",
+    "signature": "reference back();\nconst_reference back() const;",
+    "parameters": "No parameters.",
+    "returns": "A reference to the last character. Constant time.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = \"hello\";\n    return text.back() == 'o' ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stoi",
+    "summary": "Parse a numeric prefix from a string after optional whitespace and sign. The optional position reports how many characters were consumed; trailing characters are not an error by themselves. Integer conversions also accept an explicit base; base zero recognizes standard numeric prefixes.",
+    "signature": "int stoi(const std::string& text, std::size_t* position = nullptr, int base = 10);",
+    "parameters": "- `text`: numeric input.\n- `position`: optional output count of consumed characters.\n- `base`: 0 or 2 through 36. Unsigned conversions also accept a minus sign.",
+    "returns": "The converted int. Throws std::invalid_argument if no conversion occurs and std::out_of_range for a range error; check position when the whole string must be consumed.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::size_t position = 0;\n    int value = std::stoi(std::string(\"42\"), &position);\n    return value == 42 && position == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stol",
+    "summary": "Parse a numeric prefix from a string after optional whitespace and sign. The optional position reports how many characters were consumed; trailing characters are not an error by themselves. Integer conversions also accept an explicit base; base zero recognizes standard numeric prefixes.",
+    "signature": "long stol(const std::string& text, std::size_t* position = nullptr, int base = 10);",
+    "parameters": "- `text`: numeric input.\n- `position`: optional output count of consumed characters.\n- `base`: 0 or 2 through 36. Unsigned conversions also accept a minus sign.",
+    "returns": "The converted long. Throws std::invalid_argument if no conversion occurs and std::out_of_range for a range error; check position when the whole string must be consumed.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::size_t position = 0;\n    long value = std::stol(std::string(\"42\"), &position);\n    return value == 42 && position == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stoll",
+    "summary": "Parse a numeric prefix from a string after optional whitespace and sign. The optional position reports how many characters were consumed; trailing characters are not an error by themselves. Integer conversions also accept an explicit base; base zero recognizes standard numeric prefixes.",
+    "signature": "long long stoll(const std::string& text, std::size_t* position = nullptr, int base = 10);",
+    "parameters": "- `text`: numeric input.\n- `position`: optional output count of consumed characters.\n- `base`: 0 or 2 through 36. Unsigned conversions also accept a minus sign.",
+    "returns": "The converted long long. Throws std::invalid_argument if no conversion occurs and std::out_of_range for a range error; check position when the whole string must be consumed.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::size_t position = 0;\n    long long value = std::stoll(std::string(\"42\"), &position);\n    return value == 42 && position == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stoul",
+    "summary": "Parse a numeric prefix from a string after optional whitespace and sign. The optional position reports how many characters were consumed; trailing characters are not an error by themselves. Integer conversions also accept an explicit base; base zero recognizes standard numeric prefixes.",
+    "signature": "unsigned long stoul(const std::string& text, std::size_t* position = nullptr, int base = 10);",
+    "parameters": "- `text`: numeric input.\n- `position`: optional output count of consumed characters.\n- `base`: 0 or 2 through 36. Unsigned conversions also accept a minus sign.",
+    "returns": "The converted unsigned long. Throws std::invalid_argument if no conversion occurs and std::out_of_range for a range error; check position when the whole string must be consumed.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::size_t position = 0;\n    unsigned long value = std::stoul(std::string(\"42\"), &position);\n    return value == 42 && position == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stoull",
+    "summary": "Parse a numeric prefix from a string after optional whitespace and sign. The optional position reports how many characters were consumed; trailing characters are not an error by themselves. Integer conversions also accept an explicit base; base zero recognizes standard numeric prefixes.",
+    "signature": "unsigned long long stoull(const std::string& text, std::size_t* position = nullptr, int base = 10);",
+    "parameters": "- `text`: numeric input.\n- `position`: optional output count of consumed characters.\n- `base`: 0 or 2 through 36. Unsigned conversions also accept a minus sign.",
+    "returns": "The converted unsigned long long. Throws std::invalid_argument if no conversion occurs and std::out_of_range for a range error; check position when the whole string must be consumed.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::size_t position = 0;\n    unsigned long long value = std::stoull(std::string(\"42\"), &position);\n    return value == 42 && position == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stof",
+    "summary": "Parse a numeric prefix from a string after optional whitespace and sign. The optional position reports how many characters were consumed; trailing characters are not an error by themselves. The decimal-point character follows the current C locale.",
+    "signature": "float stof(const std::string& text, std::size_t* position = nullptr);",
+    "parameters": "- `text`: numeric input.\n- `position`: optional output count of consumed characters.",
+    "returns": "The converted float. Throws std::invalid_argument if no conversion occurs and std::out_of_range for a range error; check position when the whole string must be consumed.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::size_t position = 0;\n    float value = std::stof(std::string(\"3.5\"), &position);\n    return value == 3.5f && position == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stod",
+    "summary": "Parse a numeric prefix from a string after optional whitespace and sign. The optional position reports how many characters were consumed; trailing characters are not an error by themselves. The decimal-point character follows the current C locale.",
+    "signature": "double stod(const std::string& text, std::size_t* position = nullptr);",
+    "parameters": "- `text`: numeric input.\n- `position`: optional output count of consumed characters.",
+    "returns": "The converted double. Throws std::invalid_argument if no conversion occurs and std::out_of_range for a range error; check position when the whole string must be consumed.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::size_t position = 0;\n    double value = std::stod(std::string(\"3.5\"), &position);\n    return value == 3.5 && position == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stold",
+    "summary": "Parse a numeric prefix from a string after optional whitespace and sign. The optional position reports how many characters were consumed; trailing characters are not an error by themselves. The decimal-point character follows the current C locale.",
+    "signature": "long double stold(const std::string& text, std::size_t* position = nullptr);",
+    "parameters": "- `text`: numeric input.\n- `position`: optional output count of consumed characters.",
+    "returns": "The converted long double. Throws std::invalid_argument if no conversion occurs and std::out_of_range for a range error; check position when the whole string must be consumed.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::size_t position = 0;\n    long double value = std::stold(std::string(\"3.5\"), &position);\n    return value == 3.5L && position == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::to_string",
+    "summary": "Create a string representation of a numeric value. In C++17 the overloads use printf-style formatting; floating-point forms normally use six fractional digits and follow the current C locale. C++26 changes the formatting specification.",
+    "signature": "std::string to_string(int value);\nstd::string to_string(long long value);\nstd::string to_string(double value);",
+    "parameters": "- `value`: an arithmetic value. Other signed, unsigned and floating overloads are available.",
+    "returns": "A newly allocated string. These signatures show representative overloads.",
+    "members": "",
+    "example": "#include <string>\n\nint main(void) {\n    std::string text = std::to_string(42);\n    return text == \"42\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::string_view",
+    "summary": "A non-owning, read-only view of a contiguous character sequence. It does not keep the referenced storage alive and need not be null-terminated. Do not retain a view into a destroyed or reallocated string. Available since C++17.",
+    "signature": "typedef std::basic_string_view<char> string_view;",
+    "parameters": "",
+    "returns": "",
+    "members": "- `size()`, `empty()`: query the view.\n- `data()`: underlying pointer, not necessarily terminated.\n- `substr()`, `remove_prefix()`, `remove_suffix()`: create or adjust views.\n- `find()`, `compare()`: inspect characters without taking ownership.",
+    "example": "#include <string_view>\n\nint main(void) {\n    std::string_view text(\"hello\");\n    return text.substr(0, 2) == \"he\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::find_if",
+    "summary": "Find the first element for which a predicate is true, without changing the range.",
+    "signature": "template<class InputIt, class Predicate>\nInputIt find_if(InputIt first, InputIt last, Predicate predicate);",
+    "parameters": "- `[first, last)`: input range.\n- `predicate`: test that must not modify the element.",
+    "returns": "An iterator to the first match, or last. At most N predicate calls.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {1, 4, 7};\n    return std::find_if(values, values + 3, [](int value) { return value > 3; }) == values + 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::count_if",
+    "summary": "Count elements satisfying a predicate. The predicate must not modify inspected elements.",
+    "signature": "template<class InputIt, class Predicate>\ntypename std::iterator_traits<InputIt>::difference_type\ncount_if(InputIt first, InputIt last, Predicate predicate);",
+    "parameters": "- `[first, last)`: input range.\n- `predicate`: classification test.",
+    "returns": "The count of matching elements. Exactly N predicate calls.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {1, 4, 7};\n    return std::count_if(values, values + 3, [](int value) { return value > 3; }) == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::all_of",
+    "summary": "Test whether every element satisfies a predicate. An empty range satisfies the condition.",
+    "signature": "template<class InputIt, class Predicate>\nbool all_of(InputIt first, InputIt last, Predicate predicate);",
+    "parameters": "- `[first, last)`: input range.\n- `predicate`: non-modifying test.",
+    "returns": "true if every test succeeds, otherwise false. At most N predicate calls.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {1, 2, 3};\n    return std::all_of(values, values + 3, [](int value) { return value > 0; }) ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::any_of",
+    "summary": "Test whether at least one element satisfies a predicate. An empty range produces false.",
+    "signature": "template<class InputIt, class Predicate>\nbool any_of(InputIt first, InputIt last, Predicate predicate);",
+    "parameters": "- `[first, last)`: input range.\n- `predicate`: non-modifying test.",
+    "returns": "true if at least one test succeeds. At most N predicate calls.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {1, 2, 3};\n    return std::any_of(values, values + 3, [](int value) { return value == 2; }) ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::none_of",
+    "summary": "Test whether no element satisfies a predicate. An empty range produces true.",
+    "signature": "template<class InputIt, class Predicate>\nbool none_of(InputIt first, InputIt last, Predicate predicate);",
+    "parameters": "- `[first, last)`: input range.\n- `predicate`: non-modifying test.",
+    "returns": "true if every test fails. At most N predicate calls.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {1, 2, 3};\n    return std::none_of(values, values + 3, [](int value) { return value < 0; }) ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::copy",
+    "summary": "Copy a range forward into already available destination elements. It does not grow a container. The destination start must not lie inside the source range; use copy_backward for a rightward overlapping move.",
+    "signature": "template<class InputIt, class OutputIt>\nOutputIt copy(InputIt first, InputIt last, OutputIt destination);",
+    "parameters": "- `[first, last)`: source range.\n- `destination`: start of writable output with sufficient space.",
+    "returns": "The output iterator after the last copied element. Exactly N assignments.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int source[] = {1, 2, 3};\n    int destination[3];\n    std::copy(source, source + 3, destination);\n    return destination[2] == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::copy_if",
+    "summary": "Copy elements satisfying a predicate into available output storage, preserving their relative order. The source and output ranges must not overlap, and enough destination space must already exist.",
+    "signature": "template<class InputIt, class OutputIt, class Predicate>\nOutputIt copy_if(InputIt first, InputIt last, OutputIt destination, Predicate predicate);",
+    "parameters": "- Source range, writable destination and non-modifying predicate.",
+    "returns": "The iterator after the copied elements. Exactly N predicate calls.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int source[] = {1, 2, 3};\n    int destination[3] = {0};\n    int* end = std::copy_if(source, source + 3, destination, [](int value) { return value > 1; });\n    return end == destination + 2 && destination[0] == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::copy_n",
+    "summary": "Copy count elements into existing output storage. A nonpositive count performs no assignments. Do not rely on this algorithm for overlapping ranges.",
+    "signature": "template<class InputIt, class Size, class OutputIt>\nOutputIt copy_n(InputIt first, Size count, OutputIt destination);",
+    "parameters": "- `first`: source start with enough readable elements.\n- `count`: element count.\n- `destination`: writable output start.",
+    "returns": "The iterator after the copied elements. Exactly max(count, 0) assignments.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int source[] = {1, 2, 3};\n    int destination[2];\n    std::copy_n(source, 2, destination);\n    return destination[1] == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::transform",
+    "summary": "Apply an operation and assign its result into each destination element. The unary overload can transform a range in place. Output storage must already exist, and evaluation order is not guaranteed.",
+    "signature": "template<class InputIt, class OutputIt, class Operation>\nOutputIt transform(InputIt first, InputIt last, OutputIt destination, Operation operation);",
+    "parameters": "- Input range, writable output and transformation operation.\n- The operation must not invalidate iterators or modify unrelated elements in the involved ranges.",
+    "returns": "The output iterator after the last result. Exactly N operation applications.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {1, 2, 3};\n    std::transform(values, values + 3, values, [](int value) { return value * 2; });\n    return values[2] == 6 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::remove",
+    "summary": "Move elements not equal to value toward the beginning, preserving their order. It does not erase container elements or change physical size. The tail after the returned logical end remains valid but has unspecified values.",
+    "signature": "template<class ForwardIt, class T>\nForwardIt remove(ForwardIt first, ForwardIt last, const T& value);",
+    "parameters": "- `[first, last)`: writable range.\n- `value`: value to remove; avoid passing a reference to an element that the algorithm can overwrite.",
+    "returns": "The new logical end. Erase the tail separately when using a container. Linear time.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {1, 2, 1, 3};\n    int* end = std::remove(values, values + 4, 1);\n    return end == values + 2 && values[0] == 2 && values[1] == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::remove_if",
+    "summary": "Move elements failing a predicate toward the beginning, preserving their relative order. This changes the logical range but does not erase storage or reduce a container size.",
+    "signature": "template<class ForwardIt, class Predicate>\nForwardIt remove_if(ForwardIt first, ForwardIt last, Predicate predicate);",
+    "parameters": "- Writable range and a predicate that does not modify its argument.",
+    "returns": "The new logical end; the remaining tail contains valid but unspecified values. Exactly N predicate calls.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {1, 2, 3, 4};\n    int* end = std::remove_if(values, values + 4, [](int value) { return value % 2 == 0; });\n    return end == values + 2 && values[1] == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::unique",
+    "summary": "Remove consecutive equivalent values from the logical range, preserving the retained order. It does not remove non-adjacent duplicates or shrink a container; sort first only when reordering is acceptable.",
+    "signature": "template<class ForwardIt>\nForwardIt unique(ForwardIt first, ForwardIt last);",
+    "parameters": "- `[first, last)`: writable range; equality must be an equivalence relation.",
+    "returns": "The new logical end. Erase the remaining tail separately for a container. Linear time.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {1, 1, 2, 2, 3};\n    int* end = std::unique(values, values + 5);\n    return end == values + 3 && values[1] == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::replace",
+    "summary": "Assign newValue to every element equal to oldValue. The number and positions of elements do not change.",
+    "signature": "template<class ForwardIt, class T>\nvoid replace(ForwardIt first, ForwardIt last, const T& oldValue, const T& newValue);",
+    "parameters": "- Writable range and values to compare and assign. Avoid aliasing values with elements that can be overwritten.",
+    "returns": "No return value. Exactly N comparisons.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {1, 2, 1};\n    std::replace(values, values + 3, 1, 9);\n    return values[0] == 9 && values[2] == 9 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::replace_if",
+    "summary": "Assign a replacement value to elements satisfying a predicate. The range size and the order of other elements remain unchanged.",
+    "signature": "template<class ForwardIt, class Predicate, class T>\nvoid replace_if(ForwardIt first, ForwardIt last, Predicate predicate, const T& newValue);",
+    "parameters": "- Writable range, non-modifying predicate and replacement value.",
+    "returns": "No return value. Exactly N predicate applications.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {-1, 2, -3};\n    std::replace_if(values, values + 3, [](int value) { return value < 0; }, 0);\n    return values[0] == 0 && values[2] == 0 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::fill_n",
+    "summary": "Assign the same value to count existing output elements. It does not create destination storage. A nonpositive count performs no assignments.",
+    "signature": "template<class OutputIt, class Size, class T>\nOutputIt fill_n(OutputIt first, Size count, const T& value);",
+    "parameters": "- `first`: writable output start.\n- `count`: element count.\n- `value`: value to assign.",
+    "returns": "The iterator after the assigned elements. Exactly max(count, 0) assignments.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[3];\n    std::fill_n(values, 3, 7);\n    return values[0] == 7 && values[2] == 7 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stable_sort",
+    "summary": "Sort a writable random-access range while preserving the relative order of equivalent elements. The comparator must define a strict weak ordering.",
+    "signature": "template<class RandomIt>\nvoid stable_sort(RandomIt first, RandomIt last);",
+    "parameters": "- Writable random-access range; comparator overloads accept a strict weak ordering.",
+    "returns": "No return value. N log N comparisons with sufficient extra memory, otherwise up to N log-squared N comparisons in C++17.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {3, 1, 2};\n    std::stable_sort(values, values + 3);\n    return values[0] == 1 && values[2] == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::partial_sort",
+    "summary": "Put the smallest middle-first elements into a sorted prefix. The remaining suffix has unspecified order. Requires a valid writable random-access range.",
+    "signature": "template<class RandomIt>\nvoid partial_sort(RandomIt first, RandomIt middle, RandomIt last);",
+    "parameters": "- `[first, middle)`: prefix to fill with the smallest sorted elements.\n- `[first, last)`: complete input range.",
+    "returns": "No return value. Approximately N log M comparisons for N input elements and a prefix of M elements.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {4, 1, 3, 2};\n    std::partial_sort(values, values + 2, values + 4);\n    return values[0] == 1 && values[1] == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::nth_element",
+    "summary": "Place the element that would occupy nth in a sorted range at that position and partition around it. Neither side is necessarily sorted. Requires random-access iterators and a strict weak ordering.",
+    "signature": "template<class RandomIt>\nvoid nth_element(RandomIt first, RandomIt nth, RandomIt last);",
+    "parameters": "- Writable range and the desired sorted position, which may equal last.",
+    "returns": "No return value. The non-policy overload has linear average complexity.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {4, 1, 3, 2};\n    std::nth_element(values, values + 2, values + 4);\n    return values[2] == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::upper_bound",
+    "summary": "Find the first element greater than value according to the comparison. The range must be partitioned for this search; a sorted range using the same ordering satisfies the precondition.",
+    "signature": "template<class ForwardIt, class T>\nForwardIt upper_bound(ForwardIt first, ForwardIt last, const T& value);",
+    "parameters": "- Partitioned range and search value.",
+    "returns": "The first matching position or last. Logarithmic comparisons; traversal may be linear without random-access iterators.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {1, 2, 2, 3};\n    return std::upper_bound(values, values + 4, 2) == values + 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::equal_range",
+    "summary": "Find the half-open subrange of elements equivalent to value. The input must satisfy both lower_bound and upper_bound partitioning requirements, normally by being sorted with the same ordering.",
+    "signature": "template<class ForwardIt, class T>\nstd::pair<ForwardIt, ForwardIt> equal_range(ForwardIt first, ForwardIt last, const T& value);",
+    "parameters": "- Partitioned input range and search value.",
+    "returns": "A pair of lower and upper bounds; an absent value produces an empty subrange. Logarithmic comparisons, with potentially linear traversal.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {1, 2, 2, 3};\n    std::pair<int*, int*> range = std::equal_range(values, values + 4, 2);\n    return range.first == values + 1 && range.second == values + 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::clamp",
+    "summary": "Select value when it is within [low, high], otherwise select the nearest bound. low must not be greater than high. The returned reference can dangle when a selected argument is a temporary. Available since C++17.",
+    "signature": "template<class T>\nconst T& clamp(const T& value, const T& low, const T& high);",
+    "parameters": "- `value`: value to constrain.\n- `low`, `high`: ordered bounds; floating-point NaNs do not provide the required ordering.",
+    "returns": "A reference to value, low or high. At most two comparisons.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int value = 42;\n    int result = std::clamp(value, 0, 20);\n    return result == 20 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::min_element",
+    "summary": "Find the first smallest element according to operator< or a supplied strict weak ordering. The input is not modified.",
+    "signature": "template<class ForwardIt>\nForwardIt min_element(ForwardIt first, ForwardIt last);",
+    "parameters": "- `[first, last)`: forward range.",
+    "returns": "An iterator to the first smallest element, or last for an empty range. Exactly max(N-1, 0) comparisons.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {3, 1, 2};\n    return std::min_element(values, values + 3) == values + 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::max_element",
+    "summary": "Find the first largest element according to operator< or a supplied strict weak ordering. The input is not modified.",
+    "signature": "template<class ForwardIt>\nForwardIt max_element(ForwardIt first, ForwardIt last);",
+    "parameters": "- `[first, last)`: forward range.",
+    "returns": "An iterator to the first largest element, or last for an empty range. Exactly max(N-1, 0) comparisons.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {3, 1, 2};\n    return std::max_element(values, values + 3) == values ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::rotate",
+    "summary": "Move the range prefix behind the suffix while preserving order within both parts. Requires first, middle and last to delimit valid forward ranges.",
+    "signature": "template<class ForwardIt>\nForwardIt rotate(ForwardIt first, ForwardIt middle, ForwardIt last);",
+    "parameters": "- `[first, middle)`: prefix moved to the end.\n- `[middle, last)`: suffix moved to the beginning.",
+    "returns": "The new position of the original first element, with the usual empty-range cases. At most N swaps.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {1, 2, 3, 4};\n    std::rotate(values, values + 1, values + 4);\n    return values[0] == 2 && values[3] == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::is_sorted",
+    "summary": "Test whether a range is in nondecreasing order according to operator< or a comparator. Empty and single-element ranges are sorted.",
+    "signature": "template<class ForwardIt>\nbool is_sorted(ForwardIt first, ForwardIt last);",
+    "parameters": "- `[first, last)`: forward range to inspect.",
+    "returns": "true if the range is sorted, otherwise false. Linear comparisons.",
+    "members": "",
+    "example": "#include <algorithm>\n#include <utility>\n\nint main(void) {\n    int values[] = {1, 2, 2, 3};\n    return std::is_sorted(values, values + 4) ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::deque::push_front",
+    "summary": "Add one element at the front of the sequence. The const-reference overload copies; an rvalue overload moves. For deque, end insertion invalidates iterators but preserves references to existing elements.",
+    "signature": "void push_front(const T& value);\nvoid push_front(T&& value);",
+    "parameters": "- `value`: element to append or prepend.",
+    "returns": "No return value. Constant time for insertion or removal of one endpoint element.",
+    "members": "",
+    "example": "#include <deque>\n\nint main(void) {\n    std::deque<int> values = {10, 20};\n    values.push_front(30);\n    return values.size() == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::deque::push_back",
+    "summary": "Add one element at the back of the sequence. The const-reference overload copies; an rvalue overload moves. For deque, end insertion invalidates iterators but preserves references to existing elements.",
+    "signature": "void push_back(const T& value);\nvoid push_back(T&& value);",
+    "parameters": "- `value`: element to append or prepend.",
+    "returns": "No return value. Constant time for insertion or removal of one endpoint element.",
+    "members": "",
+    "example": "#include <deque>\n\nint main(void) {\n    std::deque<int> values = {10, 20};\n    values.push_back(30);\n    return values.size() == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::deque::pop_front",
+    "summary": "Destroy and remove the front element. The container must be nonempty. No value is returned, and references to the removed element become invalid.",
+    "signature": "void pop_front();",
+    "parameters": "No parameters.",
+    "returns": "No return value. Constant time for insertion or removal of one endpoint element.",
+    "members": "",
+    "example": "#include <deque>\n\nint main(void) {\n    std::deque<int> values = {10, 20};\n    values.pop_front();\n    return values.size() == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::deque::pop_back",
+    "summary": "Destroy and remove the back element. The container must be nonempty. No value is returned, and references to the removed element become invalid.",
+    "signature": "void pop_back();",
+    "parameters": "No parameters.",
+    "returns": "No return value. Constant time for insertion or removal of one endpoint element.",
+    "members": "",
+    "example": "#include <deque>\n\nint main(void) {\n    std::deque<int> values = {10, 20};\n    values.pop_back();\n    return values.size() == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::deque::front",
+    "summary": "Access the first element without removing it. The container must be nonempty.",
+    "signature": "reference front();\nconst_reference front() const;",
+    "parameters": "No parameters.",
+    "returns": "A reference to the first element.",
+    "members": "",
+    "example": "#include <deque>\n\nint main(void) {\n    std::deque<int> values = {10, 20};\n    return values.front() == 10 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::deque::back",
+    "summary": "Access the last element without removing it. The container must be nonempty.",
+    "signature": "reference back();\nconst_reference back() const;",
+    "parameters": "No parameters.",
+    "returns": "A reference to the last element.",
+    "members": "",
+    "example": "#include <deque>\n\nint main(void) {\n    std::deque<int> values = {10, 20};\n    return values.back() == 20 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::deque::size",
+    "summary": "Return the number of stored elements.",
+    "signature": "size_type size() const noexcept;",
+    "parameters": "No parameters.",
+    "returns": "The element count. Constant time in C++17.",
+    "members": "",
+    "example": "#include <deque>\n\nint main(void) {\n    std::deque<int> values = {10, 20};\n    return values.size() == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::deque::empty",
+    "summary": "Test whether the sequence contains zero elements.",
+    "signature": "bool empty() const noexcept;",
+    "parameters": "No parameters.",
+    "returns": "true when size() is zero, otherwise false.",
+    "members": "",
+    "example": "#include <deque>\n\nint main(void) {\n    std::deque<int> values = {10, 20};\n    return !values.empty() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::list::push_front",
+    "summary": "Add one element at the front of the sequence. The const-reference overload copies; an rvalue overload moves. For list, insertion preserves existing element references and iterators.",
+    "signature": "void push_front(const T& value);\nvoid push_front(T&& value);",
+    "parameters": "- `value`: element to append or prepend.",
+    "returns": "No return value. Constant time for insertion or removal of one endpoint element.",
+    "members": "",
+    "example": "#include <list>\n\nint main(void) {\n    std::list<int> values = {10, 20};\n    values.push_front(30);\n    return values.size() == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::list::push_back",
+    "summary": "Add one element at the back of the sequence. The const-reference overload copies; an rvalue overload moves. For list, insertion preserves existing element references and iterators.",
+    "signature": "void push_back(const T& value);\nvoid push_back(T&& value);",
+    "parameters": "- `value`: element to append or prepend.",
+    "returns": "No return value. Constant time for insertion or removal of one endpoint element.",
+    "members": "",
+    "example": "#include <list>\n\nint main(void) {\n    std::list<int> values = {10, 20};\n    values.push_back(30);\n    return values.size() == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::list::pop_front",
+    "summary": "Destroy and remove the front element. The container must be nonempty. No value is returned, and references to the removed element become invalid.",
+    "signature": "void pop_front();",
+    "parameters": "No parameters.",
+    "returns": "No return value. Constant time for insertion or removal of one endpoint element.",
+    "members": "",
+    "example": "#include <list>\n\nint main(void) {\n    std::list<int> values = {10, 20};\n    values.pop_front();\n    return values.size() == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::list::pop_back",
+    "summary": "Destroy and remove the back element. The container must be nonempty. No value is returned, and references to the removed element become invalid.",
+    "signature": "void pop_back();",
+    "parameters": "No parameters.",
+    "returns": "No return value. Constant time for insertion or removal of one endpoint element.",
+    "members": "",
+    "example": "#include <list>\n\nint main(void) {\n    std::list<int> values = {10, 20};\n    values.pop_back();\n    return values.size() == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::list::front",
+    "summary": "Access the first element without removing it. The container must be nonempty.",
+    "signature": "reference front();\nconst_reference front() const;",
+    "parameters": "No parameters.",
+    "returns": "A reference to the first element.",
+    "members": "",
+    "example": "#include <list>\n\nint main(void) {\n    std::list<int> values = {10, 20};\n    return values.front() == 10 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::list::back",
+    "summary": "Access the last element without removing it. The container must be nonempty.",
+    "signature": "reference back();\nconst_reference back() const;",
+    "parameters": "No parameters.",
+    "returns": "A reference to the last element.",
+    "members": "",
+    "example": "#include <list>\n\nint main(void) {\n    std::list<int> values = {10, 20};\n    return values.back() == 20 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::list::size",
+    "summary": "Return the number of stored elements.",
+    "signature": "size_type size() const noexcept;",
+    "parameters": "No parameters.",
+    "returns": "The element count. Constant time in C++17.",
+    "members": "",
+    "example": "#include <list>\n\nint main(void) {\n    std::list<int> values = {10, 20};\n    return values.size() == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::list::empty",
+    "summary": "Test whether the sequence contains zero elements.",
+    "signature": "bool empty() const noexcept;",
+    "parameters": "No parameters.",
+    "returns": "true when size() is zero, otherwise false.",
+    "members": "",
+    "example": "#include <list>\n\nint main(void) {\n    std::list<int> values = {10, 20};\n    return !values.empty() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::list::sort",
+    "summary": "Sort a list in place while preserving the order of equivalent values. Unlike std::sort, this works with bidirectional list iterators. Element references and iterators remain valid; the comparator must define a strict weak ordering.",
+    "signature": "void sort();\ntemplate<class Compare> void sort(Compare compare);",
+    "parameters": "- `compare`: optional strict weak ordering; operator< is the default.",
+    "returns": "No return value. Approximately N log N comparisons.",
+    "members": "",
+    "example": "#include <list>\n\nint main(void) {\n    std::list<int> values = {3, 1, 2};\n    values.sort();\n    return values.front() == 1 && values.back() == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::list::remove",
+    "summary": "Erase every list element equal to a value. This member actually reduces the list size, unlike the algorithm std::remove. Only iterators and references to removed elements are invalidated.",
+    "signature": "void remove(const T& value);",
+    "parameters": "- `value`: value to remove.",
+    "returns": "No return value in C++17; the count of removed elements since C++20. Linear comparisons.",
+    "members": "",
+    "example": "#include <list>\n\nint main(void) {\n    std::list<int> values = {1, 2, 1};\n    values.remove(1);\n    return values.size() == 1 && values.front() == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::list::unique",
+    "summary": "Erase adjacent equivalent elements while retaining the first element of each group. This actually reduces size. Non-adjacent duplicates remain unless the list was first grouped, for example by sorting.",
+    "signature": "void unique();\ntemplate<class Predicate> void unique(Predicate equal);",
+    "parameters": "- `equal`: optional equivalence relation; operator== is the default.",
+    "returns": "No return value in C++17; the count removed since C++20. Linear comparisons.",
+    "members": "",
+    "example": "#include <list>\n\nint main(void) {\n    std::list<int> values = {1, 1, 2, 2};\n    values.unique();\n    return values.size() == 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::queue::push",
+    "summary": "Add one element to the underlying container. Queue inserts at the back; stack inserts at the top. Copying and moving overloads are available.",
+    "signature": "void push(const value_type& value);\nvoid push(value_type&& value);",
+    "parameters": "- `value`: element to copy or move.",
+    "returns": "No return value. Complexity follows the underlying container push_back.",
+    "members": "",
+    "example": "#include <queue>\n\nint main(void) {\n    std::queue<int> values;\n    values.push(42);\n    return values.size() == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::queue::pop",
+    "summary": "Remove the next element without returning it. The adaptor must be nonempty. Queue removes the oldest element; stack removes the newest.",
+    "signature": "void pop();",
+    "parameters": "No parameters.",
+    "returns": "No return value. Read front() for queue or top() for stack before removal when the value is needed.",
+    "members": "",
+    "example": "#include <queue>\n\nint main(void) {\n    std::queue<int> values;\n    values.push(42);\n    values.pop();\n    return values.empty() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::queue::front",
+    "summary": "Access the oldest stored element without removing it. The adaptor must be nonempty.",
+    "signature": "reference front();\nconst_reference front() const;",
+    "parameters": "No parameters.",
+    "returns": "A reference to the selected element. References can be invalidated by changes to the underlying container.",
+    "members": "",
+    "example": "#include <queue>\n\nint main(void) {\n    std::queue<int> values;\n    values.push(42);\n    return values.front() == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::queue::back",
+    "summary": "Access the newest stored element without removing it. The adaptor must be nonempty.",
+    "signature": "reference back();\nconst_reference back() const;",
+    "parameters": "No parameters.",
+    "returns": "A reference to the selected element. References can be invalidated by changes to the underlying container.",
+    "members": "",
+    "example": "#include <queue>\n\nint main(void) {\n    std::queue<int> values;\n    values.push(42);\n    return values.back() == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::queue::size",
+    "summary": "Return the number of stored elements.",
+    "signature": "size_type size() const;",
+    "parameters": "No parameters.",
+    "returns": "The count or emptiness result of the underlying container.",
+    "members": "",
+    "example": "#include <queue>\n\nint main(void) {\n    std::queue<int> values;\n    values.push(42);\n    return values.size() == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::queue::empty",
+    "summary": "Test whether no elements are stored.",
+    "signature": "bool empty() const;",
+    "parameters": "No parameters.",
+    "returns": "The count or emptiness result of the underlying container.",
+    "members": "",
+    "example": "#include <queue>\n\nint main(void) {\n    std::queue<int> values;\n    values.push(42);\n    return !values.empty() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stack::push",
+    "summary": "Add one element to the underlying container. Queue inserts at the back; stack inserts at the top. Copying and moving overloads are available.",
+    "signature": "void push(const value_type& value);\nvoid push(value_type&& value);",
+    "parameters": "- `value`: element to copy or move.",
+    "returns": "No return value. Complexity follows the underlying container push_back.",
+    "members": "",
+    "example": "#include <stack>\n\nint main(void) {\n    std::stack<int> values;\n    values.push(42);\n    return values.size() == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stack::pop",
+    "summary": "Remove the next element without returning it. The adaptor must be nonempty. Queue removes the oldest element; stack removes the newest.",
+    "signature": "void pop();",
+    "parameters": "No parameters.",
+    "returns": "No return value. Read front() for queue or top() for stack before removal when the value is needed.",
+    "members": "",
+    "example": "#include <stack>\n\nint main(void) {\n    std::stack<int> values;\n    values.push(42);\n    values.pop();\n    return values.empty() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stack::top",
+    "summary": "Access the newest stored element without removing it. The adaptor must be nonempty.",
+    "signature": "reference top();\nconst_reference top() const;",
+    "parameters": "No parameters.",
+    "returns": "A reference to the selected element. References can be invalidated by changes to the underlying container.",
+    "members": "",
+    "example": "#include <stack>\n\nint main(void) {\n    std::stack<int> values;\n    values.push(42);\n    return values.top() == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stack::size",
+    "summary": "Return the number of stored elements.",
+    "signature": "size_type size() const;",
+    "parameters": "No parameters.",
+    "returns": "The count or emptiness result of the underlying container.",
+    "members": "",
+    "example": "#include <stack>\n\nint main(void) {\n    std::stack<int> values;\n    values.push(42);\n    return values.size() == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stack::empty",
+    "summary": "Test whether no elements are stored.",
+    "signature": "bool empty() const;",
+    "parameters": "No parameters.",
+    "returns": "The count or emptiness result of the underlying container.",
+    "members": "",
+    "example": "#include <stack>\n\nint main(void) {\n    std::stack<int> values;\n    values.push(42);\n    return !values.empty() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::priority_queue",
+    "summary": "A heap-backed adaptor exposing the highest-priority value at top(). With the default std::less ordering, the largest element comes first. push and pop take logarithmic comparisons; top is constant time. It does not provide ordinary iteration.",
+    "signature": "std::priority_queue<T, Container, Compare>",
+    "parameters": "",
+    "returns": "",
+    "members": "- `push()`, `emplace()`: add a value.\n- `top()`: access the highest-priority value.\n- `pop()`: remove it without returning it.\n- `size()`, `empty()`: query the adaptor.",
+    "example": "#include <queue>\n\nint main(void) {\n    std::priority_queue<int> values;\n    values.push(10);\n    values.push(30);\n    values.push(20);\n    return values.top() == 30 ? 0 : 1;\n}\n",
+    "template_parameters": "- `T`: element type.\n- `Container`: random-access sequence, vector<T> by default.\n- `Compare`: strict weak ordering, less<T> by default."
+  },
+  {
+    "symbol": "std::priority_queue::push",
+    "summary": "Insert a value and restore the heap order. The highest-priority value may change. Allocation by the underlying vector can invalidate references.",
+    "signature": "void push(const value_type& value);\nvoid push(value_type&& value);",
+    "parameters": "- `value`: element to copy or move.",
+    "returns": "No return value. Logarithmic heap comparisons plus the underlying push_back cost.",
+    "members": "",
+    "example": "#include <queue>\n\nint main(void) {\n    std::priority_queue<int> values;\n    values.push(10);\n    values.push(30);\n    return values.top() == 30 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::priority_queue::pop",
+    "summary": "Remove the highest-priority element and restore heap order. The adaptor must be nonempty; no element value is returned.",
+    "signature": "void pop();",
+    "parameters": "No parameters.",
+    "returns": "No return value. Logarithmic heap comparisons plus the underlying pop_back cost.",
+    "members": "",
+    "example": "#include <queue>\n\nint main(void) {\n    std::priority_queue<int> values;\n    values.push(10);\n    values.push(30);\n    values.pop();\n    return values.top() == 10 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::priority_queue::top",
+    "summary": "Access the highest-priority element without removing it. The adaptor must be nonempty. The result is read-only so callers cannot break heap ordering through it.",
+    "signature": "const_reference top() const;",
+    "parameters": "No parameters.",
+    "returns": "A const reference to the top element. Constant time.",
+    "members": "",
+    "example": "#include <queue>\n\nint main(void) {\n    std::priority_queue<int> values;\n    values.push(42);\n    return values.top() == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::priority_queue::size",
+    "summary": "Return the number of stored elements.",
+    "signature": "size_type size() const;",
+    "parameters": "No parameters.",
+    "returns": "The size of the underlying container.",
+    "members": "",
+    "example": "#include <queue>\n\nint main(void) {\n    std::priority_queue<int> values;\n    values.push(42);\n    return values.size() == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::priority_queue::empty",
+    "summary": "Test whether the priority queue contains zero elements.",
+    "signature": "bool empty() const;",
+    "parameters": "No parameters.",
+    "returns": "true if no elements are stored.",
+    "members": "",
+    "example": "#include <queue>\n\nint main(void) {\n    std::priority_queue<int> values;\n    return values.empty() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::set::find",
+    "summary": "Find an element with an equivalent key without inserting. Comparator equivalence determines key matches. Lookup, insertion and erasure by key have logarithmic complexity; insertion preserves existing iterators and references.",
+    "signature": "iterator find(const key_type& key);\nconst_iterator find(const key_type& key) const;",
+    "parameters": "- `key`: key to locate.",
+    "returns": "An iterator to the element, or end() if absent.",
+    "members": "",
+    "example": "#include <set>\n#include <utility>\n\nint main(void) {\n    std::set<int> values = {7};\n    return values.find(7) != values.end() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::set::count",
+    "summary": "Count elements whose keys are equivalent. This unique-key container returns only zero or one. Comparator equivalence determines key matches. Lookup, insertion and erasure by key have logarithmic complexity; insertion preserves existing iterators and references.",
+    "signature": "size_type count(const key_type& key) const;",
+    "parameters": "- `key`: key to test.",
+    "returns": "Zero or one, according to key presence.",
+    "members": "",
+    "example": "#include <set>\n#include <utility>\n\nint main(void) {\n    std::set<int> values = {7};\n    return values.count(7) == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::set::erase",
+    "summary": "Remove an element by its key. Only references and iterators to removed elements are invalidated. Position and range overloads are also available. Comparator equivalence determines key matches. Lookup, insertion and erasure by key have logarithmic complexity; insertion preserves existing iterators and references.",
+    "signature": "size_type erase(const key_type& key);",
+    "parameters": "- `key`: key to remove.",
+    "returns": "The number of removed elements: zero or one.",
+    "members": "",
+    "example": "#include <set>\n#include <utility>\n\nint main(void) {\n    std::set<int> values = {7};\n    values.erase(7);\n    return values.empty() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::set::insert",
+    "summary": "Insert a value only if no equivalent key is present. Existing values are left unchanged. Comparator equivalence determines key matches. Lookup, insertion and erasure by key have logarithmic complexity; insertion preserves existing iterators and references.",
+    "signature": "std::pair<iterator, bool> insert(const value_type& value);",
+    "parameters": "- `value`: element to insert; other forwarding and range overloads exist.",
+    "returns": "A pair containing an iterator to the resulting element and a Boolean indicating whether insertion occurred.",
+    "members": "",
+    "example": "#include <set>\n#include <utility>\n\nint main(void) {\n    std::set<int> values = {7};\n    values.insert(8);\n    return values.count(8) == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::unordered_map::find",
+    "summary": "Find an element with an equivalent key without inserting. Hash/equality determine key equivalence. Lookup and insertion are average constant time and worst-case linear; rehashing invalidates iterators but preserves element references.",
+    "signature": "iterator find(const key_type& key);\nconst_iterator find(const key_type& key) const;",
+    "parameters": "- `key`: key to locate.",
+    "returns": "An iterator to the element, or end() if absent.",
+    "members": "",
+    "example": "#include <unordered_map>\n#include <utility>\n\nint main(void) {\n    std::unordered_map<int, int> values = {{7, 42}};\n    return values.find(7) != values.end() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::unordered_map::count",
+    "summary": "Count elements whose keys are equivalent. This unique-key container returns only zero or one. Hash/equality determine key equivalence. Lookup and insertion are average constant time and worst-case linear; rehashing invalidates iterators but preserves element references.",
+    "signature": "size_type count(const key_type& key) const;",
+    "parameters": "- `key`: key to test.",
+    "returns": "Zero or one, according to key presence.",
+    "members": "",
+    "example": "#include <unordered_map>\n#include <utility>\n\nint main(void) {\n    std::unordered_map<int, int> values = {{7, 42}};\n    return values.count(7) == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::unordered_map::erase",
+    "summary": "Remove an element by its key. Only references and iterators to removed elements are invalidated. Position and range overloads are also available. Hash/equality determine key equivalence. Lookup and insertion are average constant time and worst-case linear; rehashing invalidates iterators but preserves element references.",
+    "signature": "size_type erase(const key_type& key);",
+    "parameters": "- `key`: key to remove.",
+    "returns": "The number of removed elements: zero or one.",
+    "members": "",
+    "example": "#include <unordered_map>\n#include <utility>\n\nint main(void) {\n    std::unordered_map<int, int> values = {{7, 42}};\n    values.erase(7);\n    return values.empty() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::unordered_map::insert",
+    "summary": "Insert a value only if no equivalent key is present. Existing values are left unchanged. Hash/equality determine key equivalence. Lookup and insertion are average constant time and worst-case linear; rehashing invalidates iterators but preserves element references.",
+    "signature": "std::pair<iterator, bool> insert(const value_type& value);",
+    "parameters": "- `value`: element to insert; other forwarding and range overloads exist.",
+    "returns": "A pair containing an iterator to the resulting element and a Boolean indicating whether insertion occurred.",
+    "members": "",
+    "example": "#include <unordered_map>\n#include <utility>\n\nint main(void) {\n    std::unordered_map<int, int> values = {{7, 42}};\n    values.insert(std::make_pair(8, 99));\n    return values.count(8) == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::unordered_map::at",
+    "summary": "Access the mapped value for an existing key without inserting. Throws std::out_of_range when the key is absent. Transparent-key overloads depend on the language version.",
+    "signature": "T& at(const Key& key);\nconst T& at(const Key& key) const;",
+    "parameters": "- `key`: key to find.",
+    "returns": "A reference to the mapped value. Average constant and worst-case linear lookup.",
+    "members": "",
+    "example": "#include <unordered_map>\n\nint main(void) {\n    std::unordered_map<int, int> values = {{7, 42}};\n    return values.at(7) == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::unordered_map::operator[]",
+    "summary": "Find the mapped value or insert a new value-initialized one for an absent key. For an int mapped type, the inserted value is zero. Insertion can cause rehashing and invalidate iterators; element references remain valid.",
+    "signature": "T& operator[](const Key& key);\nT& operator[](Key&& key);",
+    "parameters": "- `key`: key to find or insert.",
+    "returns": "A reference to the mapped value. Average constant, worst-case linear complexity.",
+    "members": "",
+    "example": "#include <unordered_map>\n\nint main(void) {\n    std::unordered_map<int, int> values;\n    values[7] += 1;\n    return values.at(7) == 1 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::vector::begin",
+    "summary": "Return an iterator to the first element.",
+    "signature": "iterator begin() noexcept;\nconst_iterator begin() const noexcept;",
+    "parameters": "No parameters.",
+    "returns": "For an empty vector, begin() equals end(). Reallocation invalidates the iterator.",
+    "members": "",
+    "example": "#include <vector>\n#include <iterator>\n\nint main(void) {\n    std::vector<int> values = {1, 2, 3};\n    return std::distance(values.begin(), values.end()) == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::vector::end",
+    "summary": "Return the past-the-end iterator. It is a boundary marker and must not be dereferenced.",
+    "signature": "iterator end() noexcept;\nconst_iterator end() const noexcept;",
+    "parameters": "No parameters.",
+    "returns": "One position past the last element, or begin() for an empty vector. Reallocation invalidates the iterator.",
+    "members": "",
+    "example": "#include <vector>\n#include <iterator>\n\nint main(void) {\n    std::vector<int> values = {1, 2, 3};\n    return std::distance(values.begin(), values.end()) == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::vector::assign",
+    "summary": "Replace all elements with a new sequence. These signatures show count/value and iterator-range assignment. Existing element iterators and references are invalidated.",
+    "signature": "void assign(size_type count, const T& value);\ntemplate<class InputIt> void assign(InputIt first, InputIt last);",
+    "parameters": "- `count`, `value`: number of repeated copies.\n- `[first, last)`: source range for the range overload; it must not be a range into this vector.",
+    "returns": "No return value. Linear in the assigned count and destruction of previous elements.",
+    "members": "",
+    "example": "#include <vector>\n\nint main(void) {\n    std::vector<int> values = {1, 2};\n    values.assign(3, 7);\n    return values.size() == 3 && values[2] == 7 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::vector::emplace",
+    "summary": "Construct an element before a position from forwarded constructor arguments. Reallocation invalidates every iterator and reference; otherwise those at or after the insertion position are invalidated.",
+    "signature": "template<class... Args>\niterator emplace(const_iterator position, Args&&... args);",
+    "parameters": "- `position`: insertion point, including end().\n- `args`: arguments forwarded to the element constructor.",
+    "returns": "An iterator to the inserted element. Linear in distance to the end, or the resulting size if reallocation occurs.",
+    "members": "",
+    "example": "#include <vector>\n\nint main(void) {\n    std::vector<int> values = {10, 30};\n    values.emplace(values.begin() + 1, 20);\n    return values[1] == 20 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::vector::swap",
+    "summary": "Exchange contents and storage with another vector without moving individual elements. Element references remain valid and refer to the other container afterward; past-the-end iterators may be invalidated.",
+    "signature": "void swap(vector& other);",
+    "parameters": "- `other`: vector with a compatible allocator. If allocators do not propagate on swap, unequal allocators make the operation undefined.",
+    "returns": "No return value. Constant time.",
+    "members": "",
+    "example": "#include <vector>\n\nint main(void) {\n    std::vector<int> first = {10};\n    std::vector<int> second = {20};\n    first.swap(second);\n    return first[0] == 20 && second[0] == 10 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::ifstream",
+    "summary": "An owning input file stream for char text or bytes. Construction can open a file; failure is reported through stream state unless exceptions are enabled. Destruction closes the associated file.",
+    "signature": "typedef std::basic_ifstream<char> ifstream;",
+    "parameters": "",
+    "returns": "",
+    "members": "- `operator>>` or `operator<<`: formatted I/O, as supported by the stream.\n- `good()`, `fail()`, `eof()`, `clear()`: inspect or reset state.\n- File streams additionally provide `open()`, `close()` and `is_open()`.\n- String streams provide `str()` to access their buffer contents.",
+    "example": "#include <fstream>\n\nint main(void) {\n    std::ofstream output(\"sample.txt\");\n    output << 42;\n    output.close();\n    std::ifstream input(\"sample.txt\");\n    int value = 0;\n    if (!(input >> value))\n        return 1;\n    return value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::ofstream",
+    "summary": "An owning output file stream for char data. The usual output-only open mode creates or truncates the file; use app when writes must append. Check stream state, including after close, for output errors.",
+    "signature": "typedef std::basic_ofstream<char> ofstream;",
+    "parameters": "",
+    "returns": "",
+    "members": "- `operator>>` or `operator<<`: formatted I/O, as supported by the stream.\n- `good()`, `fail()`, `eof()`, `clear()`: inspect or reset state.\n- File streams additionally provide `open()`, `close()` and `is_open()`.\n- String streams provide `str()` to access their buffer contents.",
+    "example": "#include <fstream>\n\nint main(void) {\n    std::ofstream output(\"sample.txt\");\n    if (!output)\n        return 1;\n    output << \"hello\";\n    output.close();\n    return output.fail() ? 1 : 0;\n}\n"
+  },
+  {
+    "symbol": "std::fstream",
+    "summary": "A file stream supporting both input and output. The default in|out mode normally requires an existing file. Specify trunc to create a fresh read/write file, and use positioning or flushing as required when changing direction.",
+    "signature": "typedef std::basic_fstream<char> fstream;",
+    "parameters": "",
+    "returns": "",
+    "members": "- `operator>>` or `operator<<`: formatted I/O, as supported by the stream.\n- `good()`, `fail()`, `eof()`, `clear()`: inspect or reset state.\n- File streams additionally provide `open()`, `close()` and `is_open()`.\n- String streams provide `str()` to access their buffer contents.",
+    "example": "#include <fstream>\n\nint main(void) {\n    std::fstream file(\"sample.txt\", std::ios::in | std::ios::out | std::ios::trunc);\n    if (!file)\n        return 1;\n    file << 42;\n    file.seekg(0);\n    int value = 0;\n    file >> value;\n    return value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::ostringstream",
+    "summary": "An output stream backed by an owned string buffer. Use insertion or unformatted output to build text and str() to obtain a copy of the buffer contents.",
+    "signature": "typedef std::basic_ostringstream<char> ostringstream;",
+    "parameters": "",
+    "returns": "",
+    "members": "- `operator>>` or `operator<<`: formatted I/O, as supported by the stream.\n- `good()`, `fail()`, `eof()`, `clear()`: inspect or reset state.\n- File streams additionally provide `open()`, `close()` and `is_open()`.\n- String streams provide `str()` to access their buffer contents.",
+    "example": "#include <sstream>\n\nint main(void) {\n    std::ostringstream output;\n    output << \"value = \" << 42;\n    return output.str() == \"value = 42\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::stringstream",
+    "summary": "A string-backed stream supporting both input and output. It has separate read and write positions. Replacing the buffer with str() does not by itself clear error flags; use clear() when reusing a failed stream.",
+    "signature": "typedef std::basic_stringstream<char> stringstream;",
+    "parameters": "",
+    "returns": "",
+    "members": "- `operator>>` or `operator<<`: formatted I/O, as supported by the stream.\n- `good()`, `fail()`, `eof()`, `clear()`: inspect or reset state.\n- File streams additionally provide `open()`, `close()` and `is_open()`.\n- String streams provide `str()` to access their buffer contents.",
+    "example": "#include <sstream>\n\nint main(void) {\n    std::stringstream stream;\n    stream << 42;\n    int value = 0;\n    stream >> value;\n    return value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::istream",
+    "summary": "The char input-stream type. Formatted extraction parses values and normally skips leading whitespace; unformatted operations read characters or bytes. Test stream state before using extraction results.",
+    "signature": "typedef std::basic_istream<char> istream;",
+    "parameters": "",
+    "returns": "",
+    "members": "- `operator>>` or `operator<<`: formatted I/O, as supported by the stream.\n- `good()`, `fail()`, `eof()`, `clear()`: inspect or reset state.\n- File streams additionally provide `open()`, `close()` and `is_open()`.\n- String streams provide `str()` to access their buffer contents.",
+    "example": "#include <sstream>\n#include <istream>\n\nint main(void) {\n    std::istringstream source(\"42\");\n    std::istream& input = source;\n    int value = 0;\n    if (!(input >> value))\n        return 1;\n    return value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::ostream",
+    "summary": "The char output-stream type. Insertion formats values, while put() and write() output characters directly. Failures set stream-state flags and may throw when enabled by the exception mask.",
+    "signature": "typedef std::basic_ostream<char> ostream;",
+    "parameters": "",
+    "returns": "",
+    "members": "- `operator>>` or `operator<<`: formatted I/O, as supported by the stream.\n- `good()`, `fail()`, `eof()`, `clear()`: inspect or reset state.\n- File streams additionally provide `open()`, `close()` and `is_open()`.\n- String streams provide `str()` to access their buffer contents.",
+    "example": "#include <sstream>\n#include <ostream>\n\nint main(void) {\n    std::ostringstream destination;\n    std::ostream& output = destination;\n    output << 42;\n    return destination.str() == \"42\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_ifstream::open",
+    "summary": "Associate the stream with a file. Opening an already open stream or failing to open sets failbit. A successful open clears the stream state. The class always adds its input or output mode to the supplied mode.",
+    "signature": "void open(const char* path, std::ios_base::openmode mode = std::ios_base::in);",
+    "parameters": "- `path`: file name.\n- `mode`: file access flags combined with |; filesystem-path overloads are available in C++17.",
+    "returns": "No return value. Check the stream or is_open() afterward.",
+    "members": "",
+    "example": "#include <fstream>\n\nint main(void) {\n    std::ofstream prepare(\"sample.txt\");\n    prepare.close();\n    std::ifstream file;\n    file.open(\"sample.txt\");\n    return file.is_open() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_ifstream::close",
+    "summary": "Close the associated file. Failure to close sets failbit and can throw if requested by the stream exception mask. An output close can reveal buffered write errors.",
+    "signature": "void close();",
+    "parameters": "No parameters.",
+    "returns": "No return value. Check fail() after closing when errors matter.",
+    "members": "",
+    "example": "#include <fstream>\n\nint main(void) {\n    std::ofstream prepare(\"sample.txt\");\n    prepare.close();\n    std::ifstream file(\"sample.txt\");\n    if (!file.is_open())\n        return 1;\n    file.close();\n    return !file.is_open() && !file.fail() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_ifstream::is_open",
+    "summary": "Test whether the file buffer is currently associated with an open file. This is different from testing whether the stream has encountered an I/O error.",
+    "signature": "bool is_open() const;",
+    "parameters": "No parameters.",
+    "returns": "true if a file is associated with the stream, otherwise false.",
+    "members": "",
+    "example": "#include <fstream>\n\nint main(void) {\n    std::ofstream prepare(\"sample.txt\");\n    prepare.close();\n    std::ifstream file(\"sample.txt\");\n    return file.is_open() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_ofstream::open",
+    "summary": "Associate the stream with a file. Opening an already open stream or failing to open sets failbit. A successful open clears the stream state. The class always adds its input or output mode to the supplied mode.",
+    "signature": "void open(const char* path, std::ios_base::openmode mode = std::ios_base::out);",
+    "parameters": "- `path`: file name.\n- `mode`: file access flags combined with |; filesystem-path overloads are available in C++17.",
+    "returns": "No return value. Check the stream or is_open() afterward.",
+    "members": "",
+    "example": "#include <fstream>\n\nint main(void) {\n    std::ofstream file;\n    file.open(\"sample.txt\");\n    return file.is_open() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_ofstream::close",
+    "summary": "Close the associated file. Failure to close sets failbit and can throw if requested by the stream exception mask. An output close can reveal buffered write errors.",
+    "signature": "void close();",
+    "parameters": "No parameters.",
+    "returns": "No return value. Check fail() after closing when errors matter.",
+    "members": "",
+    "example": "#include <fstream>\n\nint main(void) {\n    std::ofstream file(\"sample.txt\");\n    if (!file.is_open())\n        return 1;\n    file.close();\n    return !file.is_open() && !file.fail() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_ofstream::is_open",
+    "summary": "Test whether the file buffer is currently associated with an open file. This is different from testing whether the stream has encountered an I/O error.",
+    "signature": "bool is_open() const;",
+    "parameters": "No parameters.",
+    "returns": "true if a file is associated with the stream, otherwise false.",
+    "members": "",
+    "example": "#include <fstream>\n\nint main(void) {\n    std::ofstream file(\"sample.txt\");\n    return file.is_open() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_istream::get",
+    "summary": "Extract one character without skipping whitespace. The no-argument overload returns int_type, which can represent both character values and the traits EOF marker. Other overloads extract into references or buffers.",
+    "signature": "int_type get();",
+    "parameters": "No parameters for this overload.",
+    "returns": "The extracted character converted to int_type, or traits_type::eof() on failure. Stream state records EOF or extraction failure.",
+    "members": "",
+    "example": "#include <sstream>\n#include <istream>\n\nint main(void) {\n    std::istringstream input(\"A\");\n    int character = input.get();\n    return character == 'A' ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_istream::peek",
+    "summary": "Inspect the next character without extracting it. It does not skip whitespace. The operation can update stream state when no character is available.",
+    "signature": "int_type peek();",
+    "parameters": "No parameters.",
+    "returns": "The next character as int_type, or traits_type::eof() when unavailable.",
+    "members": "",
+    "example": "#include <sstream>\n#include <istream>\n\nint main(void) {\n    std::istringstream input(\"A\");\n    int next = input.peek();\n    int character = input.get();\n    return next == 'A' && character == 'A' ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_istream::read",
+    "summary": "Extract up to count characters into caller-owned storage, without appending a terminator. A short read sets failbit and eofbit; use gcount() to determine how many characters were stored.",
+    "signature": "basic_istream& read(CharT* buffer, std::streamsize count);",
+    "parameters": "- `buffer`: writable storage for count characters.\n- `count`: nonnegative requested character count.",
+    "returns": "A reference to this stream. The buffer contains raw characters rather than a guaranteed C string.",
+    "members": "",
+    "example": "#include <sstream>\n#include <istream>\n\nint main(void) {\n    std::istringstream input(\"abc\");\n    char buffer[3];\n    input.read(buffer, sizeof(buffer));\n    return input.gcount() == 3 && buffer[2] == 'c' ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_istream::ignore",
+    "summary": "Discard characters until a count, delimiter or EOF is reached. A matching delimiter is also discarded. Passing the largest streamsize value disables the count limit.",
+    "signature": "basic_istream& ignore(std::streamsize count = 1, int_type delimiter = traits_type::eof());",
+    "parameters": "- `count`: maximum characters to discard.\n- `delimiter`: character that ends discarding, or the traits EOF marker.",
+    "returns": "A reference to this stream. gcount() reports the discarded count.",
+    "members": "",
+    "example": "#include <sstream>\n#include <istream>\n\nint main(void) {\n    std::istringstream input(\"skip\\n42\");\n    input.ignore(100, '\\n');\n    int value = 0;\n    input >> value;\n    return value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_istream::gcount",
+    "summary": "Report the number of characters extracted by the most recent unformatted input operation. Formatted extraction with operator>> does not supply this count; operations that extract no characters can reset it to zero.",
+    "signature": "std::streamsize gcount() const;",
+    "parameters": "No parameters.",
+    "returns": "The last unformatted extraction count, saturated at the maximum streamsize value when the count is not representable.",
+    "members": "",
+    "example": "#include <sstream>\n#include <istream>\n\nint main(void) {\n    std::istringstream input(\"abc\");\n    char buffer[3];\n    input.read(buffer, sizeof(buffer));\n    return input.gcount() == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_ostream::put",
+    "summary": "Write one character without formatting it. Failure updates the stream state and can throw according to the exception mask.",
+    "signature": "basic_ostream& put(CharT character);",
+    "parameters": "- `character`: character to write.",
+    "returns": "A reference to this stream.",
+    "members": "",
+    "example": "#include <sstream>\n#include <ostream>\n\nint main(void) {\n    std::ostringstream output;\n    output.put('A');\n    return output.str() == \"A\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_ostream::write",
+    "summary": "Write exactly count characters from a buffer without treating null bytes as terminators. The supplied region must contain count readable characters.",
+    "signature": "basic_ostream& write(const CharT* buffer, std::streamsize count);",
+    "parameters": "- `buffer`: readable character storage.\n- `count`: nonnegative number of characters to output.",
+    "returns": "A reference to this stream. A failed output operation sets stream state, normally badbit.",
+    "members": "",
+    "example": "#include <sstream>\n#include <ostream>\n\nint main(void) {\n    std::ostringstream output;\n    const char text[] = \"abc\";\n    output.write(text, 3);\n    return output.str() == \"abc\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::basic_ostream::flush",
+    "summary": "Synchronize the output buffer with its associated external sequence. This can reveal buffered output errors but does not guarantee durable storage on disk.",
+    "signature": "basic_ostream& flush();",
+    "parameters": "No parameters.",
+    "returns": "A reference to this stream. Buffer synchronization failure sets badbit.",
+    "members": "",
+    "example": "#include <sstream>\n#include <ostream>\n\nint main(void) {\n    std::ostringstream output;\n    output << \"hello\";\n    output.flush();\n    return output && output.str() == \"hello\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::endl",
+    "summary": "Insert a widened newline character and flush the output stream. A plain newline avoids the extra flush when synchronization is not needed.",
+    "signature": "template<class CharT, class Traits>\nstd::basic_ostream<CharT, Traits>& endl(std::basic_ostream<CharT, Traits>& output);",
+    "parameters": "- `output`: stream to modify; the function is commonly used with operator<<.",
+    "returns": "The same output stream, allowing chained insertion.",
+    "members": "",
+    "example": "#include <sstream>\n#include <ostream>\n\nint main(void) {\n    std::ostringstream output;\n    output << \"hello\" << std::endl;\n    return output.str() == \"hello\\n\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::flush",
+    "summary": "Flush an output stream without inserting any character. This manipulator calls the stream flush member.",
+    "signature": "template<class CharT, class Traits>\nstd::basic_ostream<CharT, Traits>& flush(std::basic_ostream<CharT, Traits>& output);",
+    "parameters": "- `output`: stream to modify; the function is commonly used with operator<<.",
+    "returns": "The same output stream, allowing chained insertion.",
+    "members": "",
+    "example": "#include <sstream>\n#include <ostream>\n\nint main(void) {\n    std::ostringstream output;\n    output << \"hello\" << std::flush;\n    return output.str() == \"hello\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::cin",
+    "summary": "The standard char input stream, associated with C stdin. Formatted extraction normally skips leading whitespace. It is tied to cout by default, so an input operation can flush pending cout output.",
+    "signature": "extern std::istream cin;",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <iostream>\n\nint main(void) {\n    int value = 0;\n    if (!(std::cin >> value))\n        return 1;\n    return value == 42 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::cout",
+    "summary": "The standard char output stream, associated with C stdout. It is synchronized with C stdio by default; changing synchronization affects how mixed C and C++ I/O should be coordinated.",
+    "signature": "extern std::ostream cout;",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <iostream>\n\nint main(void) {\n    std::cout << \"hello\\n\";\n    return std::cout ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::cerr",
+    "summary": "The standard char error stream, associated with C stderr. Its unitbuf flag is set by default, requesting automatic flushing after output operations, and it is tied to cout.",
+    "signature": "extern std::ostream cerr;",
+    "parameters": "",
+    "returns": "",
+    "members": "",
+    "example": "#include <iostream>\n\nint main(void) {\n    std::cerr << \"example diagnostic\\n\";\n    return std::cerr ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::begin",
+    "summary": "Return the beginning of a container or built-in array. This is a non-owning iterator; changing or destroying the underlying range can invalidate it.",
+    "signature": "template<class Container> auto begin(Container& container) -> decltype(container.begin());\ntemplate<class T, std::size_t N> T* begin(T (&array)[N]) noexcept;",
+    "parameters": "- `container` or `array`: object whose range is requested.",
+    "returns": "The container begin iterator, or a pointer to the first array element.",
+    "members": "",
+    "example": "#include <iterator>\n\nint main(void) {\n    int values[] = {1, 2, 3};\n    return std::begin(values) == values ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::end",
+    "summary": "Return a past-the-end iterator for a container or built-in array. It marks a boundary and must not be dereferenced.",
+    "signature": "template<class Container> auto end(Container& container) -> decltype(container.end());\ntemplate<class T, std::size_t N> T* end(T (&array)[N]) noexcept;",
+    "parameters": "- `container` or `array`: object whose range is requested.",
+    "returns": "The container end iterator, or a pointer one element past the array.",
+    "members": "",
+    "example": "#include <iterator>\n\nint main(void) {\n    int values[] = {1, 2, 3};\n    return std::end(values) == values + 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::cbegin",
+    "summary": "Return a read-only beginning iterator, treating the supplied range as const. It does not make the underlying object itself const or extend its lifetime.",
+    "signature": "template<class Container> auto cbegin(const Container& container) -> decltype(std::begin(container));",
+    "parameters": "- `container`: range whose constant iterator is requested.",
+    "returns": "The beginning iterator for a const view of the range.",
+    "members": "",
+    "example": "#include <iterator>\n\nint main(void) {\n    int values[] = {1, 2, 3};\n    return std::cbegin(values) == values ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::cend",
+    "summary": "Return a read-only past-the-end iterator, treating the supplied range as const. The result is a boundary, not an element.",
+    "signature": "template<class Container> auto cend(const Container& container) -> decltype(std::end(container));",
+    "parameters": "- `container`: range whose constant end is requested.",
+    "returns": "The past-the-end iterator for a const view of the range.",
+    "members": "",
+    "example": "#include <iterator>\n\nint main(void) {\n    int values[] = {1, 2, 3};\n    return std::cend(values) == values + 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::distance",
+    "summary": "Count the iterator increments from first to last. last must be reachable from first, except that random-access iterators allow a valid negative distance within the same sequence.",
+    "signature": "template<class InputIt>\ntypename std::iterator_traits<InputIt>::difference_type distance(InputIt first, InputIt last);",
+    "parameters": "- `first`, `last`: compatible iterators into the same range.",
+    "returns": "The signed distance. Constant time for random-access iterators, otherwise linear traversal.",
+    "members": "",
+    "example": "#include <iterator>\n\nint main(void) {\n    int values[] = {1, 2, 3};\n    return std::distance(values, values + 3) == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::advance",
+    "summary": "Move an iterator in place by a signed distance. Negative movement requires bidirectional or random-access iterators. Moving outside the valid range is undefined behavior.",
+    "signature": "template<class InputIt, class Distance>\nvoid advance(InputIt& position, Distance count);",
+    "parameters": "- `position`: iterator to modify.\n- `count`: valid forward or supported backward displacement.",
+    "returns": "No return value. Constant time for random-access iterators, otherwise linear in the displacement.",
+    "members": "",
+    "example": "#include <iterator>\n\nint main(void) {\n    int values[] = {1, 2, 3};\n    int* position = values;\n    std::advance(position, 2);\n    return *position == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::next",
+    "summary": "Return a copy of an iterator moved forward by a count, leaving the original unchanged. A negative count requires backward-capable iterators; the resulting position must remain valid.",
+    "signature": "template<class InputIt>\nInputIt next(InputIt position, typename std::iterator_traits<InputIt>::difference_type count = 1);",
+    "parameters": "- `position`: starting iterator.\n- `count`: displacement, one by default.",
+    "returns": "The advanced iterator. Complexity follows std::advance.",
+    "members": "",
+    "example": "#include <iterator>\n\nint main(void) {\n    int values[] = {1, 2, 3};\n    return std::next(values, 2) == values + 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::prev",
+    "summary": "Return a copy of an iterator moved backward by a count. Requires bidirectional or random-access iterators. The resulting position must remain within the valid range.",
+    "signature": "template<class BidirIt>\nBidirIt prev(BidirIt position, typename std::iterator_traits<BidirIt>::difference_type count = 1);",
+    "parameters": "- `position`: starting iterator.\n- `count`: backward displacement; a negative value moves forward.",
+    "returns": "The shifted iterator, leaving the original unchanged.",
+    "members": "",
+    "example": "#include <iterator>\n\nint main(void) {\n    int values[] = {1, 2, 3};\n    return std::prev(values + 3) == values + 2 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::path",
+    "summary": "Represent a filesystem path without requiring that it exist. Native path syntax and character encoding depend on the platform. Use path operations rather than assuming every separator is a slash. Available since C++17.",
+    "signature": "std::filesystem::path",
+    "parameters": "",
+    "returns": "",
+    "members": "- `filename()`, `stem()`, `extension()`, `parent_path()`: decompose a path.\n- `is_absolute()`, `is_relative()`, `empty()`: query its form.\n- `string()`, `native()`: obtain a representation.\n- A path object alone does not create, open or validate a file.",
+    "example": "#include <filesystem>\n#include <string>\n\nint main(void) {\n    std::filesystem::path file(\"folder/sample.txt\");\n    return file.filename().string() == \"sample.txt\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::exists",
+    "summary": "Test whether a path resolves to an existing filesystem object, following symlinks. This is a snapshot: another process can change the object before a later operation.",
+    "signature": "bool exists(const path& file);\nbool exists(const path& file, std::error_code& error) noexcept;",
+    "parameters": "- Path arguments identify filesystem objects. Error-code overloads take a std::error_code output reference where provided.",
+    "returns": "true for an existing object, otherwise false. Throwing and error_code overloads differ in error reporting.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <fstream>\n\nint main(void) {\n    std::ofstream output(\"sample.txt\", std::ios::binary);\n    output << \"abc\";\n    output.close();\n    return std::filesystem::exists(\"sample.txt\") ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::file_size",
+    "summary": "Obtain the size of a regular file in bytes, following symlinks. The result for other file types is implementation-dependent; it is not a recursive directory size.",
+    "signature": "std::uintmax_t file_size(const path& file);\nstd::uintmax_t file_size(const path& file, std::error_code& error) noexcept;",
+    "parameters": "- Path arguments identify filesystem objects. Error-code overloads take a std::error_code output reference where provided.",
+    "returns": "The byte count. The throwing overload reports failure with filesystem_error; the error_code overload returns uintmax_t(-1) on failure.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <fstream>\n\nint main(void) {\n    std::ofstream output(\"sample.txt\", std::ios::binary);\n    output << \"abc\";\n    output.close();\n    return std::filesystem::file_size(\"sample.txt\") == 3 ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::is_regular_file",
+    "summary": "Test whether a path refers to a regular file, following symlinks. Directories and other object types do not satisfy this condition.",
+    "signature": "bool is_regular_file(const path& file);\nbool is_regular_file(const path& file, std::error_code& error) noexcept;",
+    "parameters": "- Path arguments identify filesystem objects. Error-code overloads take a std::error_code output reference where provided.",
+    "returns": "true only for a regular file. Missing paths return false; other errors follow the selected reporting overload.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <fstream>\n\nint main(void) {\n    std::ofstream output(\"sample.txt\", std::ios::binary);\n    output << \"abc\";\n    output.close();\n    return std::filesystem::is_regular_file(\"sample.txt\") ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::is_directory",
+    "summary": "Test whether a path refers to a directory, following symlinks. The result can become stale immediately if the filesystem changes.",
+    "signature": "bool is_directory(const path& file);\nbool is_directory(const path& file, std::error_code& error) noexcept;",
+    "parameters": "- Path arguments identify filesystem objects. Error-code overloads take a std::error_code output reference where provided.",
+    "returns": "true only for a directory. Missing paths return false; other errors follow the selected overload.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <fstream>\n\nint main(void) {\n    std::filesystem::create_directory(\"items\");\n    return std::filesystem::is_directory(\"items\") ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::create_directory",
+    "summary": "Create one directory. Its parent must already exist; use create_directories when intermediate parents are needed. A path that already names a directory is not an error.",
+    "signature": "bool create_directory(const path& directory);",
+    "parameters": "- Path arguments identify filesystem objects. Error-code overloads take a std::error_code output reference where provided.",
+    "returns": "true if a new directory was created, false if it was already a directory. Errors throw filesystem_error; error_code overloads are also available.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <fstream>\n\nint main(void) {\n    bool created = std::filesystem::create_directory(\"items\");\n    return created && std::filesystem::is_directory(\"items\") ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::create_directories",
+    "summary": "Create missing intermediate directories and the final directory. Existing directories are accepted. This does not guarantee that the whole operation is atomic.",
+    "signature": "bool create_directories(const path& directory);",
+    "parameters": "- Path arguments identify filesystem objects. Error-code overloads take a std::error_code output reference where provided.",
+    "returns": "true if the final directory was created, false if it already existed. Errors follow the throwing or error_code overload.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <fstream>\n\nint main(void) {\n    std::filesystem::create_directories(\"items/nested\");\n    return std::filesystem::is_directory(\"items/nested\") ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::remove",
+    "summary": "Remove a single file, symlink or empty directory. A symlink itself is removed, not its target. This is not recursive; use remove_all only when recursive deletion is intended.",
+    "signature": "bool remove(const path& file);\nbool remove(const path& file, std::error_code& error) noexcept;",
+    "parameters": "- Path arguments identify filesystem objects. Error-code overloads take a std::error_code output reference where provided.",
+    "returns": "true if an object was removed, false if none existed. Errors follow the selected reporting overload.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <fstream>\n\nint main(void) {\n    std::ofstream output(\"sample.txt\", std::ios::binary);\n    output << \"abc\";\n    output.close();\n    return std::filesystem::remove(\"sample.txt\") && !std::filesystem::exists(\"sample.txt\") ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::rename",
+    "summary": "Rename or move an object as if by the corresponding POSIX rename rules, including supported replacement cases. Cross-filesystem moves can fail. Error-code overloads allow reporting without exceptions.",
+    "signature": "void rename(const path& oldName, const path& newName);",
+    "parameters": "- Path arguments identify filesystem objects. Error-code overloads take a std::error_code output reference where provided.",
+    "returns": "No return value. The throwing overload reports filesystem_error on failure.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <fstream>\n\nint main(void) {\n    std::ofstream output(\"sample.txt\", std::ios::binary);\n    output << \"abc\";\n    output.close();\n    std::filesystem::rename(\"sample.txt\", \"renamed.txt\");\n    return std::filesystem::exists(\"renamed.txt\") ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::current_path",
+    "summary": "Get or change the process-wide working directory. Changing it affects relative paths throughout the process, including other threads; prefer explicit paths when possible.",
+    "signature": "path current_path();\nvoid current_path(const path& directory);",
+    "parameters": "- Path arguments identify filesystem objects. Error-code overloads take a std::error_code output reference where provided.",
+    "returns": "The getter returns an absolute path for the current directory. The setter returns no value; errors follow the chosen overload.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <fstream>\n\nint main(void) {\n    std::filesystem::path directory = std::filesystem::current_path();\n    return directory.is_absolute() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::directory_iterator",
+    "summary": "A single-pass input iterator over entries in one directory, excluding the special dot and dot-dot entries. Traversal order is unspecified. A default-constructed iterator is the end sentinel; incrementing or dereferencing an end iterator is invalid. Available since C++17.",
+    "signature": "std::filesystem::directory_iterator",
+    "parameters": "",
+    "returns": "",
+    "members": "- Construction with a path begins enumeration.\n- `operator*`, `operator->`: inspect the current directory_entry.\n- `operator++`: advance.\n- Copies need not be independent. Visibility of concurrent directory changes is unspecified.",
+    "example": "#include <filesystem>\n\nint main(void) {\n    std::filesystem::create_directory(\"items\");\n    return std::filesystem::directory_iterator(\"items\") == std::filesystem::directory_iterator() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::path::filename",
+    "summary": "Return the final filename component without accessing the filesystem. A trailing separator can produce an empty filename.",
+    "signature": "path filename() const;",
+    "parameters": "No parameters for these overloads.",
+    "returns": "A path containing the filename component.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <string>\n\nint main(void) {\n    std::filesystem::path file(\"folder/sample.txt\");\n    return file.filename().string() == \"sample.txt\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::path::stem",
+    "summary": "Return the filename with its last extension removed. Hidden-file and special dot-name rules differ from merely splitting at the first dot.",
+    "signature": "path stem() const;",
+    "parameters": "No parameters for these overloads.",
+    "returns": "A path containing the stem component.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <string>\n\nint main(void) {\n    std::filesystem::path file(\"folder/sample.txt\");\n    return file.stem().string() == \"sample\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::path::extension",
+    "summary": "Return the last filename extension including its leading dot. An ordinary filename without an extension produces an empty path.",
+    "signature": "path extension() const;",
+    "parameters": "No parameters for these overloads.",
+    "returns": "The extension as a path, or an empty path.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <string>\n\nint main(void) {\n    std::filesystem::path file(\"folder/sample.txt\");\n    return file.extension().string() == \".txt\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::path::parent_path",
+    "summary": "Return the path with its final filename component removed, without looking up the filesystem.",
+    "signature": "path parent_path() const;",
+    "parameters": "No parameters for these overloads.",
+    "returns": "A path representing the parent portion.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <string>\n\nint main(void) {\n    std::filesystem::path file(\"folder/sample.txt\");\n    return file.parent_path().string() == \"folder\" ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::path::empty",
+    "summary": "Test whether the path stores no characters. This says nothing about whether the filesystem object exists or has contents.",
+    "signature": "bool empty() const noexcept;",
+    "parameters": "No parameters for these overloads.",
+    "returns": "true when the stored path is empty.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <string>\n\nint main(void) {\n    std::filesystem::path file(\"folder/sample.txt\");\n    return !file.empty() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::path::is_absolute",
+    "summary": "Test whether the stored path is absolute according to the platform path rules. On Windows, a drive letter alone is not necessarily an absolute path.",
+    "signature": "bool is_absolute() const;",
+    "parameters": "No parameters for these overloads.",
+    "returns": "true if the path is absolute; no filesystem lookup is performed.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <string>\n\nint main(void) {\n    std::filesystem::path file(\"folder/sample.txt\");\n    return !file.is_absolute() ? 0 : 1;\n}\n"
+  },
+  {
+    "symbol": "std::filesystem::path::string",
+    "summary": "Obtain a narrow-character representation of a path. Encoding and conversion behavior depend on the platform; do not assume this is always UTF-8. Conversion can allocate or fail.",
+    "signature": "std::string string() const;",
+    "parameters": "No parameters for these overloads.",
+    "returns": "A new narrow string representing the native path.",
+    "members": "",
+    "example": "#include <filesystem>\n#include <string>\n\nint main(void) {\n    std::filesystem::path file(\"folder/sample.txt\");\n    return !file.string().empty() ? 0 : 1;\n}\n"
   }
 ]
